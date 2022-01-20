@@ -1,19 +1,19 @@
 #
-# Local Podspec for building local target
+# Podspec for Cocoapod
 #
 Pod::Spec.new do |s|
   s.name             = 'MagicSDK'
   s.version          = '3.0.0'
-  s.summary          = 'MagicSDK IOS'
+  s.summary          = 'Magic IOS SDK'
 
   s.description      = <<-DESC
 TODO: Add long description of the pod here.
                        DESC
 
-  s.homepage         = 'https://github.com/magicLabs/magic-ios-pod'
+  s.homepage         = 'https://github.com/magiclabs/magic-ios'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Jerry Liu' => 'jerry@magic.link' }
-  s.source           = { :git => 'https://github.com/magicLabs/magic-ios-pod.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/magiclabs/magic-ios.git', :tag => s.version.to_s }
   s.swift_version = '5.0'
   s.ios.deployment_target = '10.0'
   s.osx.deployment_target  = '10.12'
