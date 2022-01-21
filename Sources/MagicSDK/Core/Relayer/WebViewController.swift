@@ -103,7 +103,7 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
             }
             try self.dequeue()
         }catch let error {
-//            handleRollbarError(error)
+            print("Magic internal error: \(error.localizedDescription)")
         }
     }
     

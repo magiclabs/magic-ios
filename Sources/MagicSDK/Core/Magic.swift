@@ -58,8 +58,6 @@ extension Web3Response {
             return error as? RpcProvider.ProviderError
         case .success:
             return nil
-        @unknown default:
-            return nil
         }
     }
 }
