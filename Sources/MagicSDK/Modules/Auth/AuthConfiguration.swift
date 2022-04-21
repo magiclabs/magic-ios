@@ -31,3 +31,12 @@ public struct LoginWithSmsConfiguration: BaseConfiguration {
         self.phoneNumber = phoneNumber
     }
 }
+
+public struct LoginWithEmailOTPConfiguration: BaseConfiguration {
+    
+    public var email: String
+    
+    public init(email: String) {
+        self.email = email
+    }
+}
