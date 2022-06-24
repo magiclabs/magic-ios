@@ -52,6 +52,7 @@ public struct URLBuilder {
         let sdk = "magic-sdk-ios"
         let ETH_NETWORK: EthNetworkConfiguration
         let locale: String
+        let bundleId = Bundle.main.bundleIdentifier
         init(apiKey: String, network: EthNetworkConfiguration, locale: String) {
             self.ETH_NETWORK = network
             self.API_KEY = apiKey
@@ -65,6 +66,7 @@ public struct URLBuilder {
         let sdk = "magic-sdk-ios"
         let ETH_NETWORK: CustomNodeConfiguration
         let locale: String
+        let bundleId = Bundle.main.bundleIdentifier
         init(apiKey: String, customNode: CustomNodeConfiguration, locale: String) {
             self.ETH_NETWORK = customNode
             self.API_KEY = apiKey
