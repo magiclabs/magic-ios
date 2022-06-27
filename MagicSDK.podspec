@@ -3,7 +3,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'MagicSDK'
-  s.version          = '3.1.0'
+  s.version          = '3.2.0'
   s.summary          = 'Magic IOS SDK'
 
   s.description      = <<-DESC
