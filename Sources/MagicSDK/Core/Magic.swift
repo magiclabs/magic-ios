@@ -16,7 +16,6 @@ public class Magic: NSObject {
     public let auth: AuthModule
     
     // MARK: - Property
-    private let overlay: WebViewController
     public var rpcProvider: RpcProvider
     
     /// Shared instance of `Magic`
@@ -30,24 +29,58 @@ public class Magic: NSObject {
     ///   - apiKey: Your client ID. From https://dashboard.Magic.com
     ///   - ethNetwork: Network setting
     public convenience init(apiKey: String, network: EthNetwork, locale: String = Locale.current.identifier) {
-        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: EthNetworkConfiguration(network: network), locale: locale))
+        let urlBuilder = URLBuilder(apiKey: apiKey, ethNetwork: network, locale: locale, productType: ProductType.MA)
+        self.init(urlBuilder: urlBuilder)
     }
     
     public convenience init(apiKey: String, customNode: CustomNodeConfiguration, locale: String = Locale.current.identifier) {
-        self.init(urlBuilder: URLBuilder(apiKey: apiKey, customNode: customNode, locale: locale))
+        let urlBuilder = URLBuilder(apiKey: apiKey, customNode: customNode, locale: locale, productType: ProductType.MA)
+        self.init(urlBuilder: urlBuilder)
     }
     
     public convenience init(apiKey: String, locale: String = Locale.current.identifier) {
-        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: EthNetworkConfiguration(network: apiKey.contains("live") ? EthNetwork.mainnet: EthNetwork.rinkeby), locale: locale))
+        let urlBuilder = URLBuilder(apiKey: apiKey, ethNetwork: EthNetwork.mainnet, locale: locale, productType: ProductType.MA)
+        self.init(urlBuilder: urlBuilder)
     }
     
+    /// Core constructor
     private init(urlBuilder: URLBuilder) {
-        self.overlay = WebViewController(url: urlBuilder)
-        self.rpcProvider = RpcProvider(overlay: self.overlay, urlBuilder: urlBuilder)
+        self.rpcProvider = RpcProvider(urlBuilder: urlBuilder)
         self.user = UserModule(rpcProvider: self.rpcProvider)
         self.auth = AuthModule(rpcProvider: self.rpcProvider)
         super.init()
     }
+}
+
+/// An instance of the Magic SDK
+public class MagicConnect: NSObject {
+    
+    public let connect: ConnectModule
+
+    public var rpcProvider: RpcProvider
+    
+    public static var shared: MagicConnect!
+
+    public convenience init(apiKey: String) {
+        let urlBuilder = URLBuilder(apiKey: apiKey, ethNetwork: EthNetwork.mainnet, locale: "en_US", productType: ProductType.MC)
+        self.init(urlBuilder: urlBuilder)
+    }
+    
+    public convenience init(apiKey: String, network: EthNetwork) {
+        let urlBuilder = URLBuilder(apiKey: apiKey, ethNetwork: network, locale: "en_US", productType: ProductType.MC)
+        self.init(urlBuilder: urlBuilder)
+    }
+
+    private init(urlBuilder: URLBuilder) {
+        self.rpcProvider = RpcProvider(urlBuilder: urlBuilder)
+        self.connect = ConnectModule(rpcProvider: self.rpcProvider)
+        super.init()
+    }
+}
+
+enum ProductType{
+    case MA
+    case MC
 }
 
 // Handles Specific RpcError

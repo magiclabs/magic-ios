@@ -13,27 +13,21 @@ import Foundation
 // Construct a URI with options encoded
 //
 public struct URLBuilder {
-    
+
     let encodedParams, url: String
     static let host = "https://box.magic.link"
 //  static let host = "http://192.168.0.106:3016"
-    
+
     public let apiKey: String
 
-    init(apiKey: String, customNode: CustomNodeConfiguration, locale: String) {
-        let options = CustomNodeOptions(apiKey: apiKey, customNode: customNode, locale: locale)
-    
+    init(apiKey: String, customNode: CustomNodeConfiguration? = nil, ethNetwork: EthNetwork? = nil, locale: String, productType: ProductType) {
+        let options = paramsEncodable(apiKey: apiKey, customNode: customNode, ethNetwork: ethNetwork, locale: locale, productType: productType)
+
         let data = try! JSONEncoder().encode(options)
-        self.init(data: data, host: URLBuilder.host, apiKey: apiKey)
+        self.init(data: data, host: URLBuilder.host, apiKey: apiKey, productType: productType)
     }
-    
-    init(apiKey: String, network: EthNetworkConfiguration, locale: String) {
-        let options = EthNetworkOptions(apiKey: apiKey, network: network, locale: locale)
-        let data = try! JSONEncoder().encode(options)
-        self.init(data: data, host: URLBuilder.host, apiKey: apiKey)
-    }
-    
-    private init(data: Data, host: String, apiKey: String) {
+
+    private init(data: Data, host: String, apiKey: String, productType: ProductType) {
         let jsonString = String(data: data, encoding: .utf8)!
         let string = jsonString.replacingOccurrences(of: "\\", with: "")
         // Encode instantiate option to params
@@ -43,52 +37,83 @@ public struct URLBuilder {
     }
 
     // MARK: - Options structs
-    // Here, Struct is more preferable here. Even though, it can't inherit from classes
-    // Using class will create more duplicate code as all the sub-class
-    // needs to be override encode function to encode additional property
-    struct EthNetworkOptions: Encodable {
+    struct paramsEncodable: Encodable {
         let API_KEY: String
-        let host = URLBuilder.host
-        let sdk = "magic-sdk-ios"
-        let ETH_NETWORK: EthNetworkConfiguration
         let locale: String
-        let bundleId = Bundle.main.bundleIdentifier
-        init(apiKey: String, network: EthNetworkConfiguration, locale: String) {
-            self.ETH_NETWORK = network
+        let customNode: CustomNodeConfiguration?
+        let ethNetwork: EthNetwork?
+        let productType: ProductType
+        init(apiKey: String, customNode: CustomNodeConfiguration?, ethNetwork: EthNetwork?, locale: String, productType: ProductType) {
+            self.productType = productType
+            self.customNode = customNode
+            self.ethNetwork = ethNetwork
             self.API_KEY = apiKey
             self.locale = locale
         }
-    }
 
-    struct CustomNodeOptions: Encodable {
-        let API_KEY: String
-        let host = URLBuilder.host
-        let sdk = "magic-sdk-ios"
-        let ETH_NETWORK: CustomNodeConfiguration
-        let locale: String
-        let bundleId = Bundle.main.bundleIdentifier
-        init(apiKey: String, customNode: CustomNodeConfiguration, locale: String) {
-            self.ETH_NETWORK = customNode
-            self.API_KEY = apiKey
-            self.locale = locale
+        enum CodingKeys: String, CodingKey {
+            case sdk, bundleId, API_KEY, host, ETH_NETWORK, ext
+        }
+
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode("magic-sdk-ios", forKey: .sdk)
+            try container.encode(Bundle.main.bundleIdentifier, forKey: .bundleId)
+            try container.encode(self.API_KEY, forKey: .API_KEY)
+            try container.encode(URLBuilder.host, forKey: .host)
+
+            /// Network
+            if (customNode != nil) {
+                try container.encode(customNode, forKey: .ETH_NETWORK)
+            }
+            if (ethNetwork != nil) {
+                try container.encode(ethNetwork?.rawValue, forKey: .ETH_NETWORK)
+            }
+
+            try container.encode(ExtensionObject(productType: productType), forKey: .ext)
         }
     }
 }
 
+// MARK: -- Network
 public struct CustomNodeConfiguration: Encodable {
     let rpcUrl: String
     let chainId: Int?
-    
+
     public init (rpcUrl: String, chainId: Int? = nil) {
         self.rpcUrl = rpcUrl
         self.chainId = chainId
     }
 }
 
-internal struct EthNetworkConfiguration: Encodable {
-    let network: String
-    
-    init (network: EthNetwork) {
-        self.network = network.rawValue
+
+// MARK: -- Extension
+struct ExtensionObject: Encodable {
+
+    let productType: ProductType
+
+    init(productType: ProductType) {
+        self.productType = productType
     }
+
+    enum CodingKeys: String, CodingKey {
+        case connect
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        switch productType {
+        case .MC:
+            try container.encode(MCConfig(), forKey: .connect)
+            break
+        default:
+            break
+        }
+
+    }
+}
+
+internal struct MCConfig: Encodable {
+    let mc = true
 }
