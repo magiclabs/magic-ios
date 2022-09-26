@@ -13,7 +13,7 @@ public class ConnectModule: BaseModule {
     /**
      showWallet
      */
-    public func showWallet(response: @escaping Web3ResponseCompletion<String>) {
+    public func showWallet(response: @escaping Web3ResponseCompletion<Bool>) {
 
         let request = BasicRPCRequest(method: ConnectMethod.mc_wallet.rawValue, params: [])
 
@@ -23,9 +23,9 @@ public class ConnectModule: BaseModule {
     /**
      requestUserInfo
      */
-    public func requestUserInfo(response: @escaping Web3ResponseCompletion<String>) {
+    public func requestUserInfo(_ configuration: RequestUserInfoConfiguration = RequestUserInfoConfiguration(), response: @escaping Web3ResponseCompletion<UserInfoResponse>) {
 
-        let request = BasicRPCRequest(method: ConnectMethod.mc_request_user_info.rawValue, params: [])
+        let request = RPCRequest<[RequestUserInfoConfiguration]>(method: ConnectMethod.mc_request_user_info.rawValue, params: [configuration])
 
         return self.provider.send(request: request, response: response)
     }
@@ -33,7 +33,7 @@ public class ConnectModule: BaseModule {
     /**
      disconnect
      */
-    public func disconnect(response: @escaping Web3ResponseCompletion<String>) {
+    public func disconnect(response: @escaping Web3ResponseCompletion<Bool>) {
 
         let request = BasicRPCRequest(method: ConnectMethod.mc_disconnect.rawValue, params: [])
 
