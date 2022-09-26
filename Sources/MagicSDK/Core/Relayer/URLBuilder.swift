@@ -27,7 +27,7 @@ public struct URLBuilder {
         self.init(data: data, host: URLBuilder.host, apiKey: apiKey)
     }
     
-    init(apiKey: String, network: EthNetworkConfiguration, locale: String) {
+    init(apiKey: String, network: EthNetwork, locale: String) {
         let options = EthNetworkOptions(apiKey: apiKey, network: network, locale: locale)
         let data = try! JSONEncoder().encode(options)
         self.init(data: data, host: URLBuilder.host, apiKey: apiKey)
@@ -50,11 +50,11 @@ public struct URLBuilder {
         let API_KEY: String
         let host = URLBuilder.host
         let sdk = "magic-sdk-ios"
-        let ETH_NETWORK: EthNetworkConfiguration
+        let ETH_NETWORK: String
         let locale: String
         let bundleId = Bundle.main.bundleIdentifier
-        init(apiKey: String, network: EthNetworkConfiguration, locale: String) {
-            self.ETH_NETWORK = network
+        init(apiKey: String, network: EthNetwork, locale: String) {
+            self.ETH_NETWORK = network.rawValue
             self.API_KEY = apiKey
             self.locale = locale
         }
@@ -82,13 +82,5 @@ public struct CustomNodeConfiguration: Encodable {
     public init (rpcUrl: String, chainId: Int? = nil) {
         self.rpcUrl = rpcUrl
         self.chainId = chainId
-    }
-}
-
-internal struct EthNetworkConfiguration: Encodable {
-    let network: String
-    
-    init (network: EthNetwork) {
-        self.network = network.rawValue
     }
 }
