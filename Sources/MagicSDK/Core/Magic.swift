@@ -30,7 +30,7 @@ public class Magic: NSObject {
     ///   - apiKey: Your client ID. From https://dashboard.Magic.com
     ///   - ethNetwork: Network setting
     public convenience init(apiKey: String, network: EthNetwork, locale: String = Locale.current.identifier) {
-        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: EthNetworkConfiguration(network: network), locale: locale))
+        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: network, locale: locale))
     }
     
     public convenience init(apiKey: String, customNode: CustomNodeConfiguration, locale: String = Locale.current.identifier) {
@@ -38,7 +38,7 @@ public class Magic: NSObject {
     }
     
     public convenience init(apiKey: String, locale: String = Locale.current.identifier) {
-        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: EthNetworkConfiguration(network: apiKey.contains("live") ? EthNetwork.mainnet: EthNetwork.rinkeby), locale: locale))
+        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: EthNetwork.mainnet, locale: locale))
     }
     
     private init(urlBuilder: URLBuilder) {
