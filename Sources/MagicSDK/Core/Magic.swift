@@ -10,39 +10,37 @@ import WebKit
 
 /// An instance of the Magic SDK
 public class Magic: NSObject {
-    
+
     // MARK: - Module
     public let user: UserModule
     public let auth: AuthModule
-    
+
     // MARK: - Property
     public var rpcProvider: RpcProvider
-    
+
     /// Shared instance of `Magic`
     public static var shared: Magic!
-    
+
     // MARK: - Initialization
-    
+
     /// Initialize an instance of `Magic`
     ///
     /// - Parameters:
     ///   - apiKey: Your client ID. From https://dashboard.Magic.com
     ///   - ethNetwork: Network setting
     public convenience init(apiKey: String, network: EthNetwork, locale: String = Locale.current.identifier) {
-        let urlBuilder = URLBuilder(apiKey: apiKey, ethNetwork: network, locale: locale, productType: ProductType.MA)
-        self.init(urlBuilder: urlBuilder)
+        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: network, locale: locale))
     }
-    
+
     public convenience init(apiKey: String, customNode: CustomNodeConfiguration, locale: String = Locale.current.identifier) {
         let urlBuilder = URLBuilder(apiKey: apiKey, customNode: customNode, locale: locale, productType: ProductType.MA)
         self.init(urlBuilder: urlBuilder)
     }
-    
+
     public convenience init(apiKey: String, locale: String = Locale.current.identifier) {
-        let urlBuilder = URLBuilder(apiKey: apiKey, ethNetwork: EthNetwork.mainnet, locale: locale, productType: ProductType.MA)
-        self.init(urlBuilder: urlBuilder)
+        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: EthNetwork.mainnet, locale: locale))
     }
-    
+
     /// Core constructor
     private init(urlBuilder: URLBuilder) {
         self.rpcProvider = RpcProvider(urlBuilder: urlBuilder)
@@ -54,18 +52,18 @@ public class Magic: NSObject {
 
 /// An instance of the Magic SDK
 public class MagicConnect: NSObject {
-    
+
     public let connect: ConnectModule
 
     public var rpcProvider: RpcProvider
-    
+
     public static var shared: MagicConnect!
 
     public convenience init(apiKey: String) {
         let urlBuilder = URLBuilder(apiKey: apiKey, ethNetwork: EthNetwork.mainnet, locale: "en_US", productType: ProductType.MC)
         self.init(urlBuilder: urlBuilder)
     }
-    
+
     public convenience init(apiKey: String, network: EthNetwork) {
         let urlBuilder = URLBuilder(apiKey: apiKey, ethNetwork: network, locale: "en_US", productType: ProductType.MC)
         self.init(urlBuilder: urlBuilder)

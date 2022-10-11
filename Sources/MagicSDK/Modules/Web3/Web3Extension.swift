@@ -12,7 +12,7 @@ import PromiseKit
 
 // MARK: - web3 extension with closure
 public extension Web3.Eth {
-    
+
     func getCoinbase(response: @escaping Web3.Web3ResponseCompletion<EthereumAddress>) {
         let req = BasicRPCRequest(
             id: properties.rpcId,
@@ -22,7 +22,7 @@ public extension Web3.Eth {
         )
         properties.provider.send(request: req, response: response)
     }
-    
+
     func sign(from: EthereumAddress, message: EthereumData, response: @escaping Web3.Web3ResponseCompletion<EthereumData>) {
         let req = RPCRequest<EthereumValue>(
             id: properties.rpcId,
@@ -32,7 +32,7 @@ public extension Web3.Eth {
         )
         properties.provider.send(request: req, response: response)
     }
-    
+
     func signTypedDataV1(
         data: [EIP712TypedDataLegacyFields],
         account: EthereumAddress,
@@ -48,7 +48,7 @@ public extension Web3.Eth {
         )
         properties.provider.send(request: req, response: response)
     }
-    
+
     func signTypedDataV3(
         account: EthereumAddress,
         data: EIP712TypedData,
@@ -69,26 +69,26 @@ public extension Web3.Eth {
 // MARK: - web3 extension Promises
 ///
 public extension Web3.Eth {
-    
+
     func getCoinbase() -> Promise<EthereumAddress> {
         return Promise { resolver in
             getCoinbase(response: promiseResolver(resolver))
         }
     }
-    
+
     func sign(from: EthereumAddress, message: EthereumData) -> Promise<EthereumData> {
         return Promise { resolver in
             sign(from: from, message: message, response: promiseResolver(resolver))
         }
     }
-    
+
     func signTypedDataLegacy(
         account: EthereumAddress, data: [EIP712TypedDataLegacyFields]) -> Promise<EthereumData> {
         return Promise { resolver in
             signTypedDataV1(data: data, account: account, response: promiseResolver(resolver))
         }
     }
-    
+
     func signTypedData(
         account: EthereumAddress, data: EIP712TypedData) -> Promise<EthereumData> {
         return Promise { resolver in
@@ -98,7 +98,7 @@ public extension Web3.Eth {
 }
 
 public extension RPCRequest {
-    
+
     init(method: String, params: Params) {
         self = RPCRequest(id: generateRandomId(), jsonrpc: "2.0", method: method, params: params)
     }
@@ -109,7 +109,5 @@ public extension RPCRequest {
 /// Note: Conforms to Hashable so that we can use these as a Dictionary key
 public enum EthNetwork: String {
     case mainnet
-    case kovan
-    case rinkeby
-    case ropsten
+    case goerli
 }

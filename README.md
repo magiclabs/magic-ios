@@ -20,8 +20,8 @@ This will make pod file install local dependencies instead of the ones distribut
 
 ```ruby 
 # Distributed Library on Cocoapods
-# pod 'MagicSDK', '~> 3.0'
-# pod 'MagicExt-OAuth', '~> 0.8'
+# pod 'MagicSDK', '~> 4.0'
+# pod 'MagicExt-OAuth', '~> 1.0'
     
 #   Local development library
 pod 'MagicSDK', :path => '../magic-ios/MagicSDK.podspec'

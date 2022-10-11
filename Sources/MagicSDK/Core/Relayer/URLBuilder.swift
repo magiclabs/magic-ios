@@ -24,7 +24,13 @@ public struct URLBuilder {
         let options = paramsEncodable(apiKey: apiKey, customNode: customNode, ethNetwork: ethNetwork, locale: locale, productType: productType)
 
         let data = try! JSONEncoder().encode(options)
-        self.init(data: data, host: URLBuilder.host, apiKey: apiKey, productType: productType)
+        self.init(data: data, host: URLBuilder.host, apiKey: apiKey)
+    }
+
+    init(apiKey: String, network: EthNetwork, locale: String) {
+        let options = EthNetworkOptions(apiKey: apiKey, network: network, locale: locale)
+        let data = try! JSONEncoder().encode(options)
+        self.init(data: data, host: URLBuilder.host, apiKey: apiKey)
     }
 
     private init(data: Data, host: String, apiKey: String, productType: ProductType) {
@@ -39,14 +45,13 @@ public struct URLBuilder {
     // MARK: - Options structs
     struct paramsEncodable: Encodable {
         let API_KEY: String
+        let host = URLBuilder.host
+        let sdk = "magic-sdk-ios"
+        let ETH_NETWORK: String
         let locale: String
-        let customNode: CustomNodeConfiguration?
-        let ethNetwork: EthNetwork?
-        let productType: ProductType
-        init(apiKey: String, customNode: CustomNodeConfiguration?, ethNetwork: EthNetwork?, locale: String, productType: ProductType) {
-            self.productType = productType
-            self.customNode = customNode
-            self.ethNetwork = ethNetwork
+        let bundleId = Bundle.main.bundleIdentifier
+        init(apiKey: String, network: EthNetwork, locale: String) {
+            self.ETH_NETWORK = network.rawValue
             self.API_KEY = apiKey
             self.locale = locale
         }
