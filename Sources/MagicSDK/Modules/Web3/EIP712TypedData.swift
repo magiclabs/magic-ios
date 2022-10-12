@@ -16,10 +16,11 @@ public struct EIP712TypedData: Codable, Equatable {
     }
 
     public struct Domain: Codable, Equatable {
-        let name: String
-        let version: String
+        let name: String?
+        let version: String?
         let chainId: Int?
-        let verifyingContract: String
+        let verifyingContract: String?
+        let salt: UInt32?
     }
 
     public let types: Dictionary<String, Array<Type>>
