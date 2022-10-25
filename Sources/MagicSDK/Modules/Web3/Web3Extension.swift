@@ -118,13 +118,6 @@ public extension Web3.Eth {
             signTypedDataV4(account: account, data: data, response: promiseResolver(resolver))
         }
     }
-
-    func ecRecover(
-        message: String, signature: String) -> Promise<EthereumAddress> {
-        return Promise { resolver in
-            ecRecover(message: message, signature: signature, response: promiseResolver(resolver))
-        }
-    }
 }
 
 public extension RPCRequest {
