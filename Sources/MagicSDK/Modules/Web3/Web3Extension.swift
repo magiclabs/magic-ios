@@ -64,6 +64,22 @@ public extension Web3.Eth {
         )
         properties.provider.send(request: req, response: response)
     }
+
+    func signTypedDataV4(
+        account: EthereumAddress,
+        data: EIP712TypedData,
+        response: @escaping Web3ResponseCompletion<EthereumData>
+    ) {
+        let req = RPCRequest<SignTypedDataCallParams>(
+            id: properties.rpcId,
+            jsonrpc: Web3.jsonrpc,
+            method: "eth_signTypedData_v4",
+            params: SignTypedDataCallParams(
+                account: account, data: data
+            )
+        )
+        properties.provider.send(request: req, response: response)
+    }
 }
 
 // MARK: - web3 extension Promises
@@ -93,6 +109,20 @@ public extension Web3.Eth {
         account: EthereumAddress, data: EIP712TypedData) -> Promise<EthereumData> {
         return Promise { resolver in
             signTypedDataV3(account: account, data: data, response: promiseResolver(resolver))
+        }
+    }
+
+    func signTypedDataV4(
+        account: EthereumAddress, data: EIP712TypedData) -> Promise<EthereumData> {
+        return Promise { resolver in
+            signTypedDataV4(account: account, data: data, response: promiseResolver(resolver))
+        }
+    }
+
+    func ecRecover(
+        message: String, signature: String) -> Promise<EthereumAddress> {
+        return Promise { resolver in
+            ecRecover(message: message, signature: signature, response: promiseResolver(resolver))
         }
     }
 }
