@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  ConnectModule.swift
 //
 //
 //  Created by Jerry Liu on 9/6/22.
@@ -9,6 +9,17 @@ import Foundation
 import MagicSDK_Web3
 
 public class ConnectModule: BaseModule {
+
+    /**
+     getWalletInfo
+     */
+    public func getWalletInfo(response: @escaping Web3ResponseCompletion<WalletInfoResponse>) {
+
+        let request = BasicRPCRequest(method: ConnectMethod.mc_get_wallet_info.rawValue, params: [])
+
+        return self.provider.send(request: request, response: response)
+    }
+
 
     /**
      showWallet

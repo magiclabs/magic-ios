@@ -217,10 +217,34 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
         webViewFinishLoading = true
         do {
             try self.dequeue()
-        } catch {
-//            handleRollbarError(error)
-        }
+        } catch {}
     }
+    
+    // handle external link clicked events
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+            // Check for links.
+            if navigationAction.navigationType == .linkActivated {
+                // Make sure the URL is set.
+                guard let url = navigationAction.request.url else {
+                    decisionHandler(.allow)
+                    return
+                }
+
+                // Check for the scheme component.
+                let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+                if components?.scheme == "http" || components?.scheme == "https" {
+                    // Open the link in the external browser.
+                    UIApplication.shared.open(url)
+                    // Cancel the decisionHandler because we managed the navigationAction.
+                    decisionHandler(.cancel)
+                } else {
+                    decisionHandler(.allow)
+                }
+            } else {
+                decisionHandler(.allow)
+            }
+        }
+
     
     
     // MARK: - View

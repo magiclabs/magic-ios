@@ -12,3 +12,6 @@ public struct UserInfoResponse: MagicResponse {
     public let email: String?
 }
 
+public struct WalletInfoResponse: MagicResponse {
+    public let walletType: String?
+}

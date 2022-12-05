@@ -9,14 +9,11 @@ import MagicSDK_Web3
 import WebKit
 
 /// An instance of the Magic SDK
-public class Magic: NSObject {
+public class Magic: MagicCore {
 
     // MARK: - Module
     public let user: UserModule
     public let auth: AuthModule
-
-    // MARK: - Property
-    public var rpcProvider: RpcProvider
 
     /// Shared instance of `Magic`
     public static var shared: Magic!
@@ -29,7 +26,7 @@ public class Magic: NSObject {
     ///   - apiKey: Your client ID. From https://dashboard.Magic.com
     ///   - ethNetwork: Network setting
     public convenience init(apiKey: String, network: EthNetwork, locale: String = Locale.current.identifier) {
-        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: network, locale: locale))
+        self.init(urlBuilder: URLBuilder(apiKey: apiKey, locale: locale, productType: .MA))
     }
 
     public convenience init(apiKey: String, customNode: CustomNodeConfiguration, locale: String = Locale.current.identifier) {
@@ -38,25 +35,24 @@ public class Magic: NSObject {
     }
 
     public convenience init(apiKey: String, locale: String = Locale.current.identifier) {
-        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: EthNetwork.mainnet, locale: locale))
+        self.init(urlBuilder: URLBuilder(apiKey: apiKey, locale: locale, productType: .MA))
     }
 
     /// Core constructor
     private init(urlBuilder: URLBuilder) {
-        self.rpcProvider = RpcProvider(urlBuilder: urlBuilder)
-        self.user = UserModule(rpcProvider: self.rpcProvider)
-        self.auth = AuthModule(rpcProvider: self.rpcProvider)
-        super.init()
+        let rpcProvider = RpcProvider(urlBuilder: urlBuilder)
+        self.user = UserModule(rpcProvider: rpcProvider)
+        self.auth = AuthModule(rpcProvider: rpcProvider)
+        super.init(rpcProvider: rpcProvider)
     }
 }
 
 /// An instance of the Magic SDK
-public class MagicConnect: NSObject {
+public class MagicConnect: MagicCore {
 
     public let connect: ConnectModule
 
-    public var rpcProvider: RpcProvider
-
+    /// Shared instance of `Magic`
     public static var shared: MagicConnect!
 
     public convenience init(apiKey: String) {
@@ -70,13 +66,23 @@ public class MagicConnect: NSObject {
     }
 
     private init(urlBuilder: URLBuilder) {
-        self.rpcProvider = RpcProvider(urlBuilder: urlBuilder)
-        self.connect = ConnectModule(rpcProvider: self.rpcProvider)
-        super.init()
+        let rpcProvider = RpcProvider(urlBuilder: urlBuilder)
+        self.connect = ConnectModule(rpcProvider: rpcProvider)
+        super.init(rpcProvider: rpcProvider)
     }
 }
 
-enum ProductType{
+public class MagicCore: NSObject {
+    
+    // MARK: - Property
+    public var rpcProvider: RpcProvider
+    
+    internal init(rpcProvider: RpcProvider) {
+        self.rpcProvider = rpcProvider
+    }
+}
+
+internal enum ProductType{
     case MA
     case MC
 }
