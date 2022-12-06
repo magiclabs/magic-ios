@@ -28,9 +28,9 @@ public class RpcProvider: NetworkClient, Web3Provider {
     let overlay: WebViewController
     public let urlBuilder: URLBuilder
     
-    required init(overlay: WebViewController, urlBuilder: URLBuilder) {
+    required init(urlBuilder: URLBuilder) {
+        self.overlay = WebViewController(url: urlBuilder)
         self.urlBuilder = urlBuilder
-        self.overlay = overlay
         super.init()
     }
     
