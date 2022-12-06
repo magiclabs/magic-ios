@@ -8,6 +8,12 @@
 import MagicSDK_Web3
 import WebKit
 
+
+internal enum ProductType{
+    case MA
+    case MC
+}
+
 /// An instance of the Magic SDK
 public class Magic: MagicCore {
 
@@ -74,7 +80,6 @@ public class MagicConnect: MagicCore {
 
 public class MagicCore: NSObject {
     
-    // MARK: - Property
     public var rpcProvider: RpcProvider
     
     internal init(rpcProvider: RpcProvider) {
@@ -82,10 +87,6 @@ public class MagicCore: NSObject {
     }
 }
 
-internal enum ProductType{
-    case MA
-    case MC
-}
 
 // Handles Specific RpcError
 extension Web3Response {

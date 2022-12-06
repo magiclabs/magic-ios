@@ -16,14 +16,12 @@ public struct URLBuilder {
 
     let encodedParams, url: String
     static let host = "https://box.magic.link"
-//  static let host = "http://192.168.0.106:3016"
 
     public let apiKey: String
 
     init(apiKey: String, customNode: CustomNodeConfiguration? = nil, ethNetwork: EthNetwork? = nil, locale: String, productType: ProductType) {
-        let options = paramsEncodable(apiKey: apiKey, ethNetwork: ethNetwork, customNode: customNode, locale: locale, productType: productType)
 
-        let data = try! JSONEncoder().encode(options)
+        let data = try! JSONEncoder().encode(paramsEncodable(apiKey: apiKey, ethNetwork: ethNetwork, customNode: customNode, locale: locale, productType: productType))
         self.init(data: data, host: URLBuilder.host, apiKey: apiKey, productType: productType)
     }
 
