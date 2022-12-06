@@ -12,9 +12,7 @@ public struct RequestUserInfoConfiguration: BaseConfiguration {
     ///
     public var isResponseRequired = false
 
-    public init(isResponseRequired: Bool) {
+    public init(isResponseRequired: Bool = false) {
         self.isResponseRequired = isResponseRequired
     }
-
-    public init() {}
 }
