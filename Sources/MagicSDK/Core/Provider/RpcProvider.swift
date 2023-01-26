@@ -76,14 +76,13 @@ public class RpcProvider: NetworkClient, Web3Provider {
         }.catch { error in
             let errResponse = Web3Response<Result>(error: ProviderError.encodingFailed(error))
             response(errResponse)
-//            handleRollbarError(error, log: false)
         }
     }
 }
 
 public typealias Web3ResponseCompletion<Result: Codable> = (_ resp: Web3Response<Result>) -> Void
 
-extension BytesInitializable {
+internal extension BytesInitializable {
     init(_ bytes: BytesConvertible ) throws {
         let bytes = try bytes.makeBytes()
         try self.init(bytes)
