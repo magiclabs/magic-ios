@@ -6,7 +6,7 @@
 //  Copyright © 2020 Magic Labs Inc. All rights reserved.
 //
 
-import MagicSDK_Web3
+import Web3
 import WebKit
 import PromiseKit
 
@@ -83,8 +83,8 @@ public class RpcProvider: NetworkClient, Web3Provider {
 
 public typealias Web3ResponseCompletion<Result: Codable> = (_ resp: Web3Response<Result>) -> Void
 
-internal extension Web3BytesInitializable {
-    init(_ bytes: Web3BytesRepresentable) throws {
+extension BytesInitializable {
+    init(_ bytes: BytesConvertible ) throws {
         let bytes = try bytes.makeBytes()
         try self.init(bytes)
     }
