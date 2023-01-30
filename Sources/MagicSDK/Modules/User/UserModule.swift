@@ -107,4 +107,17 @@ public class UserModule: BaseModule {
             logout(response: promiseResolver(resolver))
         }
     }
+    /**
+            showSettings
+     */
+    public func showSettings(response: @escaping Web3ResponseCompletion<String>) {
+        let request = BasicRPCRequest(method: UserMethod.magic_auth_settings.rawValue, params: [])
+        self.provider.send(request: request, response: response)
+    }
+    
+    public func showSettings() -> Promise<String> {
+        return Promise { resolver in
+            showSettings(response: promiseResolver(resolver))
+        }
+    }
 }
