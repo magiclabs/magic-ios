@@ -82,6 +82,7 @@ public class RpcProvider: NetworkClient, Web3Provider {
 
 public typealias Web3ResponseCompletion<Result: Codable> = (_ resp: Web3Response<Result>) -> Void
 
+// Necessary to avoid conflicts with other dependency packages
 internal extension BytesInitializable {
     init(_ bytes: BytesConvertible ) throws {
         let bytes = try bytes.makeBytes()
