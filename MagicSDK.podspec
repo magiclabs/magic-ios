@@ -21,8 +21,8 @@ TODO: Add long description of the pod here.
   s.source_files = 'Sources/MagicSDK/**/*'
 
   s.dependency 'Web3', '~> 0.5.0'
-  s.dependency 'MagicSDK-Web3/ContractABI', '~> 1.0'
-  s.dependency 'MagicSDK-Web3/PromiseKit', '~> 1.0'
+  s.dependency 'Web3/ContractABI', '~> 1.0'
+  s.dependency 'Web3/PromiseKit', '~> 1.0'
 
   s.dependency 'PromiseKit/CorePromise', '~> 6.15'
 
