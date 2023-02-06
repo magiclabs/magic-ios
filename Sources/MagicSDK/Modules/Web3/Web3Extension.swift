@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import MagicSDK_Web3
+import Web3
 import PromiseKit
 
 // MARK: - web3 extension with closure
