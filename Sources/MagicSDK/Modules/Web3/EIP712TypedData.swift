@@ -5,7 +5,7 @@
 //  Created by Yehor Popovych on 3/19/19.
 //  From: https://github.com/Boilertalk/Web3.swift/pull/75/commits/24c556f970115d15d38a4497952767fc4582b2b2
 import Foundation
-import Web3
+import MagicSDK_Web3
 
 
 // MARK: - EIP 712

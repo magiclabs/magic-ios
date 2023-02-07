@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Web3
+import MagicSDK_Web3
 
 public class ConnectModule: BaseModule {
 

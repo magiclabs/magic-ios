@@ -6,7 +6,7 @@
 //  Copyright © 2020 Magic Labs Inc. All rights reserved.
 //
 
-import Web3
+import MagicSDK_Web3
 import WebKit
 import PromiseKit
 
@@ -76,15 +76,15 @@ public class RpcProvider: NetworkClient, Web3Provider {
         }.catch { error in
             let errResponse = Web3Response<Result>(error: ProviderError.encodingFailed(error))
             response(errResponse)
+//            handleRollbarError(error, log: false)
         }
     }
 }
 
 public typealias Web3ResponseCompletion<Result: Codable> = (_ resp: Web3Response<Result>) -> Void
 
-// Necessary to avoid conflicts with other dependency packages
-internal extension BytesInitializable {
-    init(_ bytes: BytesConvertible ) throws {
+internal extension Web3BytesInitializable {
+    init(_ bytes: Web3BytesRepresentable) throws {
         let bytes = try bytes.makeBytes()
         try self.init(bytes)
     }
