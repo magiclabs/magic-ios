@@ -133,5 +133,19 @@ public class UserModule: BaseModule {
         return Promise { resolver in
             updatePhoneNumber(response: promiseResolver(resolver))
         }
+    }        
+    
+    /**
+        recoverAccount
+     */
+    public func recoverAccount(response: @escaping Web3ResponseCompletion<String>) {
+        let request = BasicRPCRequest(method: UserMethod.magic_auth_recover_account.rawValue, params: [])
+        self.provider.send(request: request, response: response)
+    }
+    
+    public func recoverAccount() -> Promise<String> {
+        return Promise { resolver in
+            showSettings(response: promiseResolver(resolver))
+        }
     }
 }
