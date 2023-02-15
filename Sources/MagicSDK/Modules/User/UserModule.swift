@@ -108,7 +108,7 @@ public class UserModule: BaseModule {
         }
     }
     /**
-            showSettings
+        showSettings
      */
     public func showSettings(response: @escaping Web3ResponseCompletion<String>) {
         let request = BasicRPCRequest(method: UserMethod.magic_auth_settings.rawValue, params: [])
@@ -118,6 +118,20 @@ public class UserModule: BaseModule {
     public func showSettings() -> Promise<String> {
         return Promise { resolver in
             showSettings(response: promiseResolver(resolver))
+        }
+    }
+    
+    /**
+        updatePhoneNumber
+     */
+    public func updatePhoneNumber(response: @escaping Web3ResponseCompletion<String>) {
+        let request = BasicRPCRequest(method: UserMethod.magic_auth_update_phone_number.rawValue, params: [])
+        self.provider.send(request: request, response: response)
+    }
+    
+    public func updatePhoneNumber() -> Promise<String> {
+        return Promise { resolver in
+            updatePhoneNumber(response: promiseResolver(resolver))
         }
     }
 }
