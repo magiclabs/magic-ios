@@ -7,9 +7,10 @@
 
 import Foundation
 
-internal enum ConnectMethod: String, CaseIterable {
+internal enum WalletMethod: String, CaseIterable {
 
     // MC
+    case mc_login = "eth_requestAccounts"
     case mc_get_wallet_info
     case mc_wallet
     case mc_request_user_info
