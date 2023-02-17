@@ -29,10 +29,10 @@ public class Magic: NSObject {
     ///
     /// - Parameters:
     ///   - apiKey: Your client ID. From https://dashboard.Magic.com
-    ///   - network: Etherum Network setting (ie. mainnet or goerli)
+    ///   - ethNetwork: Etherum Network setting (ie. mainnet or goerli)
     ///   - customNode: A custom RPC node 
-    public convenience init(apiKey: String, network: EthNetwork, locale: String = Locale.current.identifier) {
-        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: network, locale: locale))
+    public convenience init(apiKey: String, ethNetwork: EthNetwork, locale: String = Locale.current.identifier) {
+        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: ethNetwork, locale: locale))
     }
 
     public convenience init(apiKey: String, customNode: CustomNodeConfiguration, locale: String = Locale.current.identifier) {
