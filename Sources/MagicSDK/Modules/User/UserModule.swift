@@ -8,20 +8,29 @@
 import Foundation
 import MagicSDK_Web3
 import PromiseKit
+import os
 
 public class UserModule: BaseModule {
-    
+    @available(iOS 14.0, *)
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: UserModule.self)
+    )
     /**
      GetIdToken
      */
     public func getIdToken(_ configuration: GetIdTokenConfiguration? = nil, response: @escaping Web3ResponseCompletion<String>) {
-        
         let request = RPCRequest<[GetIdTokenConfiguration?]>(method: UserMethod.magic_auth_get_id_token.rawValue, params: [configuration])
 
         return self.provider.send(request: request, response: response)
     }
     
     public func getIdToken(_ configuration: GetIdTokenConfiguration? = nil) -> Promise<String>  {
+        if #available(iOS 14.0, *) {
+            UserModule.logger.warning("getIdToken: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("\(BaseWarningLog.MA_Method)")
+        }
         return Promise { resolver in
             getIdToken(configuration, response: promiseResolver(resolver))
         }
@@ -31,13 +40,18 @@ public class UserModule: BaseModule {
             Generate Id Token
      */
     public func generateIdToken(_ configuration: GenerateIdTokenConfiguration? = nil, response: @escaping Web3ResponseCompletion<String>) {
-        
         let request = RPCRequest<[GenerateIdTokenConfiguration?]>(method: UserMethod.magic_auth_generate_id_token.rawValue, params: [configuration])
         
         return self.provider.send(request: request, response: response)
     }
     
     public func generateIdToken(_ configuration: GenerateIdTokenConfiguration? = nil) -> Promise<String> {
+        if #available(iOS 14.0, *) {
+            UserModule.logger.warning("generateIdToken: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("\(BaseWarningLog.MA_Method)")
+        }
+        
         return Promise { resolver in
             generateIdToken(configuration, response: promiseResolver(resolver))
         }
@@ -53,6 +67,12 @@ public class UserModule: BaseModule {
     }
     
     public func getMetadata() -> Promise<UserMetadata>  {
+        if #available(iOS 14.0, *) {
+            UserModule.logger.warning("getMetadata: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("\(BaseWarningLog.MA_Method)")
+        }
+        
         return Promise { resolver in
             getMetadata(response: promiseResolver(resolver))
         }
@@ -67,6 +87,12 @@ public class UserModule: BaseModule {
     }
     
     public func isLoggedIn() -> Promise<Bool>  {
+        if #available(iOS 14.0, *) {
+            UserModule.logger.warning("isLoggedIn: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("\(BaseWarningLog.MA_Method)")
+        }
+        
         return Promise { resolver in
             isLoggedIn(response: promiseResolver(resolver))
         }
@@ -83,12 +109,24 @@ public class UserModule: BaseModule {
     }
     
     public func updateEmail(_ configuration: UpdateEmailConfiguration) -> Promise<Bool> {
+        if #available(iOS 14.0, *) {
+            UserModule.logger.warning("updateEmail: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("\(BaseWarningLog.MA_Method)")
+        }
+        
         return Promise { resolver in
             updateEmail(configuration, response: promiseResolver(resolver))
         }
     }
     
     public func updateEmail(_ configuration: UpdateEmailConfiguration, eventLog: Bool) -> MagicEventPromise<Bool> {
+        if #available(iOS 14.0, *) {
+            UserModule.logger.warning("updateEmail: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("\(BaseWarningLog.MA_Method)")
+        }
+        
         return MagicEventPromise (eventCenter: self.magicEventCenter, eventLog: eventLog){ resolver in
             self.updateEmail(configuration, response: promiseResolver(resolver))
         }
@@ -103,6 +141,12 @@ public class UserModule: BaseModule {
     }
     
     public func logout() -> Promise<Bool>  {
+        if #available(iOS 14.0, *) {
+            UserModule.logger.warning("logout: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("\(BaseWarningLog.MA_Method)")
+        }
+        
         return Promise { resolver in
             logout(response: promiseResolver(resolver))
         }
@@ -116,6 +160,12 @@ public class UserModule: BaseModule {
     }
     
     public func showSettings() -> Promise<String> {
+        if #available(iOS 14.0, *) {
+            UserModule.logger.warning("showSettings: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("\(BaseWarningLog.MA_Method)")
+        }
+        
         return Promise { resolver in
             showSettings(response: promiseResolver(resolver))
         }

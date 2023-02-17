@@ -9,8 +9,14 @@
 import Foundation
 import MagicSDK_Web3
 import PromiseKit
+import os
 
 public class AuthModule: BaseModule {
+    @available(iOS 14.0, *)
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: AuthModule.self)
+    )
     
     // MARK: - Login with magic link
     public func loginWithMagicLink (_ configuration: LoginWithMagicLinkConfiguration, response: @escaping Web3ResponseCompletion<String> ) {
@@ -19,12 +25,24 @@ public class AuthModule: BaseModule {
     }
     
     public func loginWithMagicLink (_ configuration: LoginWithMagicLinkConfiguration) -> Promise<String> {
+        if #available(iOS 14.0, *) {
+            AuthModule.logger.warning("loginWithMagicLink: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("\(BaseWarningLog.MA_Method)")
+        }
+        
         return Promise { resolver in
             loginWithMagicLink(configuration, response: promiseResolver(resolver))
         }
     }
     
     public func loginWithMagicLink (_ configuration: LoginWithMagicLinkConfiguration, eventLog: Bool) -> MagicEventPromise<String> {
+        if #available(iOS 14.0, *) {
+            AuthModule.logger.warning("loginWithMagicLink: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("\(BaseWarningLog.MA_Method)")
+        }
+        
         return MagicEventPromise (eventCenter: self.magicEventCenter, eventLog: eventLog) { resolver in
             self.loginWithMagicLink(configuration, response: promiseResolver(resolver))
         }
@@ -37,6 +55,12 @@ public class AuthModule: BaseModule {
     }
     
     public func loginWithSMS (_ configuration: LoginWithSmsConfiguration) -> Promise<String> {
+        if #available(iOS 14.0, *) {
+            AuthModule.logger.warning("loginWithSMS: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("\(BaseWarningLog.MA_Method)")
+        }
+        
         return Promise { resolver in
             loginWithSMS(configuration, response: promiseResolver(resolver))
         }
@@ -49,6 +73,12 @@ public class AuthModule: BaseModule {
     }
     
     public func loginWithEmailOTP (_ configuration: LoginWithEmailOTPConfiguration) -> Promise<String> {
+        if #available(iOS 14.0, *) {
+            AuthModule.logger.warning("loginWithEmailOTP: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("\(BaseWarningLog.MA_Method)")
+        }
+        
         return Promise { resolver in
             loginWithEmailOTP(configuration, response: promiseResolver(resolver))
         }
