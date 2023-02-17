@@ -15,7 +15,3 @@ public struct UserInfoResponse: MagicResponse {
 public struct WalletInfoResponse: MagicResponse {
     public let walletType: String?
 }
-
-public struct ConnectWithUIResponse: MagicResponse {
-    public let accounts: [String]
-}

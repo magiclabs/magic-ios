@@ -19,7 +19,7 @@ public class WalletModule: BaseModule {
     /**
      connectWithUI
      */
-    public func connectWithUI(response: @escaping Web3ResponseCompletion<ConnectWithUIResponse>) {
+    public func connectWithUI(response: @escaping Web3ResponseCompletion<[String]>) {
         if #available(iOS 14.0, *) {
             WalletModule.logger.warning("connectWithUI: \(BaseWarningLog.MC_Method)")
         } else {
