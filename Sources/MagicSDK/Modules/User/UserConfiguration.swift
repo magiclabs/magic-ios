@@ -39,3 +39,11 @@ public class UpdateEmailConfiguration: BaseConfiguration {
         self.showUI = showUI
     }
 }
+
+public class RecoverAccountConfiguration: BaseConfiguration {
+    var email: String
+    
+    public init(email: String){
+        self.email = email
+    }
+}
