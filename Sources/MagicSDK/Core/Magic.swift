@@ -11,7 +11,9 @@ import WebKit
 
 /// An instance of the Magic SDK
 public class Magic: NSObject {
-
+    // MARK: - Log Message Warning
+    public let MA_EXTENSION_ONLY_MSG = "This extension only works with Magic Auth API Keys"
+    
     // MARK: - Modules
     public let user: UserModule
     public let auth: AuthModule
