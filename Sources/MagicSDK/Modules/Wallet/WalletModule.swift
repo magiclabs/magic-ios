@@ -16,6 +16,7 @@ public class WalletModule: BaseModule {
         category: String(describing: WalletModule.self)
     )
     
+    
     /**
      connectWithUI
      */
@@ -23,7 +24,7 @@ public class WalletModule: BaseModule {
         if #available(iOS 14.0, *) {
             WalletModule.logger.warning("connectWithUI: \(BaseWarningLog.MC_Method)")
         } else {
-            print("\(BaseWarningLog.MC_Method)")
+            print("connectWithUI: \(BaseWarningLog.MC_Method)")
         }
 
         let request = BasicRPCRequest(method: WalletMethod.mc_login.rawValue, params: [])
@@ -38,7 +39,7 @@ public class WalletModule: BaseModule {
         if #available(iOS 14.0, *) {
             WalletModule.logger.warning("showUI: \(BaseWarningLog.MC_Method)")
         } else {
-            print("\(BaseWarningLog.MC_Method)")
+            print("showUI: \(BaseWarningLog.MC_Method)")
         }
         
         let request = BasicRPCRequest(method: WalletMethod.mc_wallet.rawValue, params: [])
@@ -53,7 +54,7 @@ public class WalletModule: BaseModule {
         if #available(iOS 14.0, *) {
             WalletModule.logger.warning("getInfo: \(BaseWarningLog.MC_Method)")
         } else {
-            print("\(BaseWarningLog.MC_Method)")
+            print("getInfo: \(BaseWarningLog.MC_Method)")
         }
         
         let request = BasicRPCRequest(method: WalletMethod.mc_get_wallet_info.rawValue, params: [])
@@ -69,7 +70,7 @@ public class WalletModule: BaseModule {
         if #available(iOS 14.0, *) {
             WalletModule.logger.warning("requestUserInfoWithUI: \(BaseWarningLog.MC_Method)")
         } else {
-            print("\(BaseWarningLog.MC_Method)")
+            print("requestUserInfoWithUI: \(BaseWarningLog.MC_Method)")
         }
         
         let request = RPCRequest<[RequestUserInfoWithUIConfiguration?]>(method: WalletMethod.mc_request_user_info.rawValue, params: (configuration != nil) ? [configuration]: [])
@@ -84,7 +85,7 @@ public class WalletModule: BaseModule {
         if #available(iOS 14.0, *) {
             WalletModule.logger.warning("disconnect: \(BaseWarningLog.MC_Method)")
         } else {
-            print("\(BaseWarningLog.MC_Method)")
+            print("disconnect: \(BaseWarningLog.MC_Method)")
         }
         
         let request = BasicRPCRequest(method: WalletMethod.mc_disconnect.rawValue, params: [])

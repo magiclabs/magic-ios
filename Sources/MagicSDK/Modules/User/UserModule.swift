@@ -20,17 +20,18 @@ public class UserModule: BaseModule {
      GetIdToken
      */
     public func getIdToken(_ configuration: GetIdTokenConfiguration? = nil, response: @escaping Web3ResponseCompletion<String>) {
+        if #available(iOS 14.0, *) {
+            UserModule.logger.warning("getIdToken: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("getIdToken: \(BaseWarningLog.MA_Method)")
+        }
+        
         let request = RPCRequest<[GetIdTokenConfiguration?]>(method: UserMethod.magic_auth_get_id_token.rawValue, params: [configuration])
 
         return self.provider.send(request: request, response: response)
     }
     
     public func getIdToken(_ configuration: GetIdTokenConfiguration? = nil) -> Promise<String>  {
-        if #available(iOS 14.0, *) {
-            UserModule.logger.warning("getIdToken: \(BaseWarningLog.MA_Method)")
-        } else {
-            print("\(BaseWarningLog.MA_Method)")
-        }
         return Promise { resolver in
             getIdToken(configuration, response: promiseResolver(resolver))
         }
@@ -40,18 +41,18 @@ public class UserModule: BaseModule {
             Generate Id Token
      */
     public func generateIdToken(_ configuration: GenerateIdTokenConfiguration? = nil, response: @escaping Web3ResponseCompletion<String>) {
+        if #available(iOS 14.0, *) {
+            UserModule.logger.warning("generateIdToken: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("generateIdToken: \(BaseWarningLog.MA_Method)")
+        }
+        
         let request = RPCRequest<[GenerateIdTokenConfiguration?]>(method: UserMethod.magic_auth_generate_id_token.rawValue, params: [configuration])
         
         return self.provider.send(request: request, response: response)
     }
     
     public func generateIdToken(_ configuration: GenerateIdTokenConfiguration? = nil) -> Promise<String> {
-        if #available(iOS 14.0, *) {
-            UserModule.logger.warning("generateIdToken: \(BaseWarningLog.MA_Method)")
-        } else {
-            print("\(BaseWarningLog.MA_Method)")
-        }
-        
         return Promise { resolver in
             generateIdToken(configuration, response: promiseResolver(resolver))
         }
@@ -62,17 +63,17 @@ public class UserModule: BaseModule {
             Get Metadata
      */
     public func getMetadata(response: @escaping Web3ResponseCompletion<UserMetadata>) {
+        if #available(iOS 14.0, *) {
+            UserModule.logger.warning("getMetadata: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("getMetadata: \(BaseWarningLog.MA_Method)")
+        }
+        
         let request = BasicRPCRequest(method: UserMethod.magic_auth_get_metadata.rawValue, params: [])
         return self.provider.send(request: request, response: response)
     }
     
     public func getMetadata() -> Promise<UserMetadata>  {
-        if #available(iOS 14.0, *) {
-            UserModule.logger.warning("getMetadata: \(BaseWarningLog.MA_Method)")
-        } else {
-            print("\(BaseWarningLog.MA_Method)")
-        }
-        
         return Promise { resolver in
             getMetadata(response: promiseResolver(resolver))
         }
@@ -82,17 +83,16 @@ public class UserModule: BaseModule {
                 IsLogged In
      */
     public func isLoggedIn(response: @escaping Web3ResponseCompletion<Bool>) {
+        if #available(iOS 14.0, *) {
+            UserModule.logger.warning("isLoggedIn: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("isLoggedIn: \(BaseWarningLog.MA_Method)")
+        }
         let request = BasicRPCRequest(method: UserMethod.magic_auth_is_logged_in.rawValue, params: [])
         self.provider.send(request: request, response: response)
     }
     
     public func isLoggedIn() -> Promise<Bool>  {
-        if #available(iOS 14.0, *) {
-            UserModule.logger.warning("isLoggedIn: \(BaseWarningLog.MA_Method)")
-        } else {
-            print("\(BaseWarningLog.MA_Method)")
-        }
-        
         return Promise { resolver in
             isLoggedIn(response: promiseResolver(resolver))
         }
@@ -102,31 +102,18 @@ public class UserModule: BaseModule {
      *       Update Email
      */
     public func updateEmail(_ configuration: UpdateEmailConfiguration, response: @escaping Web3ResponseCompletion<Bool>) {
-        
         let request = RPCRequest<[UpdateEmailConfiguration]>(method: UserMethod.magic_auth_update_email.rawValue, params: [configuration])
         
         return self.provider.send(request: request, response: response)
     }
     
     public func updateEmail(_ configuration: UpdateEmailConfiguration) -> Promise<Bool> {
-        if #available(iOS 14.0, *) {
-            UserModule.logger.warning("updateEmail: \(BaseWarningLog.MA_Method)")
-        } else {
-            print("\(BaseWarningLog.MA_Method)")
-        }
-        
         return Promise { resolver in
             updateEmail(configuration, response: promiseResolver(resolver))
         }
     }
     
     public func updateEmail(_ configuration: UpdateEmailConfiguration, eventLog: Bool) -> MagicEventPromise<Bool> {
-        if #available(iOS 14.0, *) {
-            UserModule.logger.warning("updateEmail: \(BaseWarningLog.MA_Method)")
-        } else {
-            print("\(BaseWarningLog.MA_Method)")
-        }
-        
         return MagicEventPromise (eventCenter: self.magicEventCenter, eventLog: eventLog){ resolver in
             self.updateEmail(configuration, response: promiseResolver(resolver))
         }
@@ -136,17 +123,17 @@ public class UserModule: BaseModule {
             Logout
      */
     public func logout (response: @escaping Web3ResponseCompletion<Bool>) {
+        if #available(iOS 14.0, *) {
+            UserModule.logger.warning("logout: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("logout: \(BaseWarningLog.MA_Method)")
+        }
+        
         let request = BasicRPCRequest(method: UserMethod.magic_auth_logout.rawValue, params: [])
         self.provider.send(request: request, response: response)
     }
     
     public func logout() -> Promise<Bool>  {
-        if #available(iOS 14.0, *) {
-            UserModule.logger.warning("logout: \(BaseWarningLog.MA_Method)")
-        } else {
-            print("\(BaseWarningLog.MA_Method)")
-        }
-        
         return Promise { resolver in
             logout(response: promiseResolver(resolver))
         }
@@ -155,17 +142,17 @@ public class UserModule: BaseModule {
         showSettings
      */
     public func showSettings(response: @escaping Web3ResponseCompletion<String>) {
+        if #available(iOS 14.0, *) {
+            UserModule.logger.warning("showSettings: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("showSettings: \(BaseWarningLog.MA_Method)")
+        }
+        
         let request = BasicRPCRequest(method: UserMethod.magic_auth_settings.rawValue, params: [])
         self.provider.send(request: request, response: response)
     }
     
     public func showSettings() -> Promise<String> {
-        if #available(iOS 14.0, *) {
-            UserModule.logger.warning("showSettings: \(BaseWarningLog.MA_Method)")
-        } else {
-            print("\(BaseWarningLog.MA_Method)")
-        }
-        
         return Promise { resolver in
             showSettings(response: promiseResolver(resolver))
         }
@@ -175,6 +162,12 @@ public class UserModule: BaseModule {
         updatePhoneNumber
      */
     public func updatePhoneNumber(response: @escaping Web3ResponseCompletion<String>) {
+        if #available(iOS 14.0, *) {
+            UserModule.logger.warning("updatePhoneNumber: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("updatePhoneNumber: \(BaseWarningLog.MA_Method)")
+        }
+        
         let request = BasicRPCRequest(method: UserMethod.magic_auth_update_phone_number.rawValue, params: [])
         self.provider.send(request: request, response: response)
     }
@@ -189,6 +182,11 @@ public class UserModule: BaseModule {
         recoverAccount
      */
     public func recoverAccount(_ configuration: RecoverAccountConfiguration, response: @escaping Web3ResponseCompletion<Bool>) {
+        if #available(iOS 14.0, *) {
+            UserModule.logger.warning("recoverAccount: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("recoverAccount: \(BaseWarningLog.MA_Method)")
+        }
         
         let request = RPCRequest<[RecoverAccountConfiguration]>(method: UserMethod.magic_auth_recover_account.rawValue, params: [configuration])
         
