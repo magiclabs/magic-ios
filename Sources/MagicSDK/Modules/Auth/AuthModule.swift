@@ -9,8 +9,14 @@
 import Foundation
 import MagicSDK_Web3
 import PromiseKit
+import os
 
 public class AuthModule: BaseModule {
+    @available(iOS 14.0, *)
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: AuthModule.self)
+    )
     
     // MARK: - Login with magic link
     public func loginWithMagicLink (_ configuration: LoginWithMagicLinkConfiguration, response: @escaping Web3ResponseCompletion<String> ) {
@@ -32,6 +38,11 @@ public class AuthModule: BaseModule {
     
     // MARK: - Login with SMS
     public func loginWithSMS (_ configuration: LoginWithSmsConfiguration, response: @escaping Web3ResponseCompletion<String> ) {
+        if #available(iOS 14.0, *) {
+            AuthModule.logger.warning("loginWithSMS: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("loginWithSMS: \(BaseWarningLog.MA_Method)")
+        }
         let request = RPCRequest<[LoginWithSmsConfiguration]>(method: AuthMethod.magic_auth_login_with_sms.rawValue, params: [configuration])
         self.provider.send(request: request, response: response)
     }
@@ -44,6 +55,12 @@ public class AuthModule: BaseModule {
     
     // MARK: - Login with EmailOTP
     public func loginWithEmailOTP (_ configuration: LoginWithEmailOTPConfiguration, response: @escaping Web3ResponseCompletion<String> ) {
+        if #available(iOS 14.0, *) {
+            AuthModule.logger.warning("loginWithEmailOTP: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("loginWithEmailOTP: \(BaseWarningLog.MA_Method)")
+        }
+        
         let request = RPCRequest<[LoginWithEmailOTPConfiguration]>(method: AuthMethod.magic_auth_login_with_email_otp.rawValue, params: [configuration])
         self.provider.send(request: request, response: response)
     }
