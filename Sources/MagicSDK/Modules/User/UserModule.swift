@@ -162,12 +162,6 @@ public class UserModule: BaseModule {
         updatePhoneNumber
      */
     public func updatePhoneNumber(response: @escaping Web3ResponseCompletion<String>) {
-        if #available(iOS 14.0, *) {
-            UserModule.logger.warning("updatePhoneNumber: \(BaseWarningLog.MA_Method)")
-        } else {
-            print("updatePhoneNumber: \(BaseWarningLog.MA_Method)")
-        }
-        
         let request = BasicRPCRequest(method: UserMethod.magic_auth_update_phone_number.rawValue, params: [])
         self.provider.send(request: request, response: response)
     }
