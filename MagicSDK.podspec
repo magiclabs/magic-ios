@@ -16,7 +16,7 @@ TODO: Add long description of the pod here.
   s.source           = { :git => 'https://github.com/magiclabs/magic-ios.git', :tag => s.version.to_s }
   s.swift_version = '5.0'
   s.ios.deployment_target = '13.0'
-#   s.osx.deployment_target  = '10.12'
+#   s.osx.deployment_target  = '10.15'
 
   s.source_files = 'Sources/MagicSDK/**/*'
 
