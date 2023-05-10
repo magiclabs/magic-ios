@@ -224,6 +224,26 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
         } catch {}
     }
     
+    /**
+     * The WKWebView will call this method when a web application calls window.open() in JavaScript.
+     */
+    func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+        // Make sure the URL is set.
+        guard let url = navigationAction.request.url,
+              let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              let openInDeviceBrowser = urlComponents.queryItems?.first(where: { $0.name == "open_in_device_browser" })?.value?.lowercased()
+        else {
+            return nil
+        }
+        
+        if UIApplication.shared.canOpenURL(url) && openInDeviceBrowser == "true" {
+            // Open the link in the external browser.
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
+        
+        return nil
+    }
+    
     // handle external link clicked events
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
             // Check for links.
