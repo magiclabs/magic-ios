@@ -17,4 +17,5 @@ public struct UserMetadata: MagicResponse {
     public let issuer: String?
     public let publicAddress: String?
     public let email: String?
+    public let phoneNumber: String?
 }
