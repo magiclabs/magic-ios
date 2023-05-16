@@ -141,7 +141,7 @@ public class UserModule: BaseModule {
     /**
         showSettings
      */
-    public func showSettings(response: @escaping Web3ResponseCompletion<String>) {
+    public func showSettings(response: @escaping Web3ResponseCompletion<UserMetadata>) {
         if #available(iOS 14.0, *) {
             UserModule.logger.warning("showSettings: \(BaseWarningLog.MA_Method)")
         } else {
@@ -152,7 +152,7 @@ public class UserModule: BaseModule {
         self.provider.send(request: request, response: response)
     }
     
-    public func showSettings() -> Promise<String> {
+    public func showSettings() -> Promise<UserMetadata> {
         return Promise { resolver in
             showSettings(response: promiseResolver(resolver))
         }
