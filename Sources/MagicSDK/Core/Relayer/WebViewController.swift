@@ -8,6 +8,7 @@
 
 import WebKit
 import UIKit
+import MagicWebView
 
 /// An instance of the Fortmatc Phantom WebView
 class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler, WKNavigationDelegate, UIScrollViewDelegate {
@@ -169,38 +170,7 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
     // MARK: - view loading
     /// loadView will be triggered when addsubview is called. It will create a webview to post messages to auth relayer
     override func loadView() {
-
-        // Display Full screen
-        let cgRect = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-        let webView: WKWebView = {
-
-            let webCfg:WKWebViewConfiguration = WKWebViewConfiguration()
-            let userController:WKUserContentController = WKUserContentController()
-
-            // Add a script message handler for receiving messages over `fortmatic` messageHandler. The controller needs to conform
-            // with WKScriptMessageHandler protocol
-            userController.add(self, name: messageName)
-            webCfg.userContentController = userController;
-
-            let webView = WKWebView(frame: cgRect, configuration: webCfg)
-
-            // Transparent background
-            webView.backgroundColor = UIColor.clear
-            webView.scrollView.backgroundColor = UIColor.clear
-            webView.isOpaque = false
-
-            webView.uiDelegate = self
-
-            if #available(macOS 13.3, iOS 16.4, tvOS 16.4, *) {
-                webView.isInspectable = true
-            }
-
-            // conforming WKNavigationDelegate
-            webView.navigationDelegate = self
-
-            return webView
-        }()
-        self.webView = webView
+        self.webView = MagicWebView.create(with: self)
         view = webView
     }
 
@@ -319,5 +289,4 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
         }
     }
 }
-
 
