@@ -28,8 +28,13 @@ let package = Package(
                 .product(name: "MagicSDK_Web3", package: "Web3.swift"),
                 .product(name: "Web3PromiseKit", package: "Web3.swift"),
                 .product(name: "PromiseKit", package: "PromiseKit"),
-                .product(name: "Web3ContractABI", package: "Web3.swift")
-            ]),
+                .product(name: "Web3ContractABI", package: "Web3.swift"),
+                "MagicWebView"
+        ]),
+        .binaryTarget(
+            name: "MagicWebView",
+            path: "./MagicWebView.xcframework"
+        ),
         .testTarget(
             name: "MagicSDKTests",
             dependencies: [
