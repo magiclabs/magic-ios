@@ -52,4 +52,10 @@ public class AuthModule: BaseModule {
             loginWithEmailOTP(configuration, response: promiseResolver(resolver))
         }
     }
+    
+    public enum LoginEmailOTPLinkEvent: String {
+        case emailNotDeliverable = "email-not-deliverable"
+        case emailSent = "email-sent"
+        case retry = "retry"
+    }
 }
