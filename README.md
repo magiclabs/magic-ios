@@ -1,15 +1,17 @@
 # MagicSDK
-[![CI Status](https://img.shields.io/travis/Ethella/MagicSDK.svg?style=flat)](https://travis-ci.org/Ethella/MagicSDK)
 [![Version](https://img.shields.io/cocoapods/v/MagicSDK.svg?style=flat)](https://cocoapods.org/pods/MagicSDK)
 [![License](https://img.shields.io/cocoapods/l/MagicSDK.svg?style=flat)](https://cocoapods.org/pods/MagicSDK)
 [![Platform](https://img.shields.io/cocoapods/p/MagicSDK.svg?style=flat)](https://cocoapods.org/pods/MagicSDK)
 
+## ⚠️ CocoaPods Incompatible with Xcode v14.3  ⚠️
+The Magic CocoaPods SDK version (v8.0.0) is currently out of sync with the Magic SPM package version, as we await CocoaPods to fix [this compatibility issue](https://github.com/CocoaPods/CocoaPods/issues/11839). CocoaPods developers who wish to develop on the latest version of Xcode will need to integrate our SPM package.
+
 ## ⚠️ Removal of `loginWithMagicLink()`  ⚠️
 As of `v9.0.0`, passcodes (ie. `loginWithSMS()`, `loginWithEmailOTP()`) are replacing Magic Links (ie. `loginWithMagicLink()`) for all of our Mobile SDKs⁠. [Learn more](https://magic.link/docs/auth/login-methods/email/email-link-update-march-2023)
 
-Cocoapods
----
-## Set up the local development env
+## Cocoapods
+
+### Set up the local development env
 1. To start the demo app with local development SDK, download following projects
 ```bash
 # demo app
