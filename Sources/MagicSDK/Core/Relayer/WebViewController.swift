@@ -111,7 +111,7 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
         
         // Decode here to get the event name
         let eventData = payloadStr.data(using: .utf8)!
-        let eventResponse = try JSONDecoder().decode(ResponseData<MagicEventResponse<[AnyValue]>>.self, from: eventData)
+        let eventResponse = try JSONDecoder().decode(MagicResponseData<MagicEventResponse<[AnyValue]>>.self, from: eventData)
         
         // post event to the obeserver
         let event = eventResponse.response
@@ -183,6 +183,11 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
             webCfg.userContentController = userController;
             
             let webView = WKWebView(frame: cgRect, configuration: webCfg)
+            if #available(iOS 16.4, *) {
+                webView.isInspectable = true
+            } else {
+                // Fallback on earlier versions
+            }
             
             // Transparent background
             webView.backgroundColor = UIColor.clear
