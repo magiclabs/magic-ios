@@ -1,7 +1,7 @@
 //
-//  File.swift
+//  SEKeys.swift
 //  Based on the tutorial from https://developer.apple.com/documentation/cryptokit/storing_cryptokit_keys_in_the_keychain#3369560
-//
+//  Keypairs generated from SE (Secure Enclave) can only be unwrapped by the same SE. Exporting it will be useless
 //  Created by Jerry Liu on 7/5/23.
 //
 
@@ -14,7 +14,6 @@ let account = "link.magic.auth.dpop".data(using: .utf8)!
 
 // seccured enclave key pairs error
 public enum SEKPError: Swift.Error {
-    case generatingKPFailed(Unmanaged<CFError>?)
     case KeyStoreError(String)
 }
 
@@ -26,16 +25,16 @@ func createP256KeyInSE () throws -> SecureEnclave.P256.Signing.PrivateKey {
         [.privateKeyUsage],
         nil
     )!
-    
+
     // Generate a new private key in the Secure Enclave.
-    let privateKey = try! SecureEnclave.P256.Signing.PrivateKey(accessControl: accessControl)
-    
-    try storeKey(privateKey)
+    let privateKey = try SecureEnclave.P256.Signing.PrivateKey(accessControl: accessControl)
+
+    try storeKeyToKeyChain(privateKey)
 
     return privateKey
 }
 
-func storeKey<T: GenericPasswordConvertible>(_ key: T) throws {
+func storeKeyToKeyChain<T: GenericPasswordConvertible>(_ key: T) throws {
     // Treat the key data as a generic password.
     let query = [kSecClass: kSecClassGenericPassword,
                  kSecAttrAccount: account,
@@ -51,7 +50,7 @@ func storeKey<T: GenericPasswordConvertible>(_ key: T) throws {
     }
 }
 
-func retrieveKey () throws -> SecureEnclave.P256.Signing.PrivateKey {
+func retrieveKeyFromKeyChain () throws -> SecureEnclave.P256.Signing.PrivateKey {
     // Seek a generic password with the given account.
     let query = [kSecClass: kSecClassGenericPassword,
                  kSecAttrAccount: account,
@@ -74,7 +73,7 @@ func retrieveKey () throws -> SecureEnclave.P256.Signing.PrivateKey {
 protocol GenericPasswordConvertible: CustomStringConvertible {
     /// Creates a key from a raw representation.
     init<D>(rawRepresentation data: D) throws where D: ContiguousBytes
-    
+
     /// A raw representation of the key.
     var rawRepresentation: Data { get }
 }
@@ -84,22 +83,12 @@ extension SecureEnclave.P256.Signing.PrivateKey: GenericPasswordConvertible {
     public var description: String {
         return ""
     }
-    
+
     init<D>(rawRepresentation data: D) throws where D: ContiguousBytes {
         try self.init(dataRepresentation: data as! Data)
     }
-    
+
     var rawRepresentation: Data {
         return dataRepresentation  // Contiguous bytes repackaged as a Data instance.
     }
 }
-
-protocol SecKeyConvertible: CustomStringConvertible {
-    /// Creates a key from an X9.63 representation.
-    init<Bytes>(x963Representation: Bytes) throws where Bytes: ContiguousBytes
-    
-    /// An X9.63 representation of the key.
-    var x963Representation: Data { get }
-}
-
-

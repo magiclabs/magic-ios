@@ -21,15 +21,13 @@ func createJwtWithCK()  -> String?{
     var error: Unmanaged<CFError>?
     
     do {
-        let privateKey = try retrieveKey()
+        let privateKey = try retrieveKeyFromKeyChain()
         
         // Get the public key.
         let publicKey = privateKey.publicKey
         
         // Get the raw representation of the public key.
         let rawPublicKey = publicKey.rawRepresentation
-        
-        print("rawPublicKey", rawPublicKey)
 
         // Extract the x and y coordinates.
         let xCoordinateData = rawPublicKey[1..<33]
@@ -47,8 +45,6 @@ func createJwtWithCK()  -> String?{
             "x": xCoordinateBase64,
             "y": yCoordinateBase64
         ] as [String : Any]
-                
-        print("headers", headers)
         
          let headersData = try JSONSerialization.data(withJSONObject: headers)
          let headersB64 = base64UrlEncoded(headersData)
@@ -57,12 +53,10 @@ func createJwtWithCK()  -> String?{
         // construct claims
         let iat = Int(Date().timeIntervalSince1970)
         let jti = UUID().uuidString.lowercased()
-        
+    
         let claims: [String: Any] = ["iat": iat, "jti": jti]
         let claimsData = try JSONSerialization.data(withJSONObject: claims)
         let claimsB64 = base64UrlEncoded(claimsData)
-        
-        print("claims", claims)
         
         /// sign
         let signingInput = headersB64 + "." + claimsB64
@@ -70,16 +64,16 @@ func createJwtWithCK()  -> String?{
        
         let signature = try! privateKey.signature(for: signingInputData)
         
-        print("signature", signature)
-        
         let signatureB64 = base64UrlEncoded(signature.rawRepresentation)
         
         let jwt = signingInput + "." + signatureB64
         
-        print("jwt", jwt)
+        print(jwt)
+        
         return jwt
 
     } catch {
+        // silently handled error
         print("Failed to generate JWT: \(error)")
         return nil
     }
