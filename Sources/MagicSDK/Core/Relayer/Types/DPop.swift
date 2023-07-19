@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Wentao Liu on 7/11/23.
 //
@@ -17,15 +17,15 @@ func base64UrlEncoded(_ data: Data) -> String {
     return b64
 }
 
-func createJwtWithCK()  -> String?{
+func createJwt()  -> String?{
     var error: Unmanaged<CFError>?
-    
+
     do {
         let privateKey = try retrieveKeyFromKeyChain()
-        
+
         // Get the public key.
         let publicKey = privateKey.publicKey
-        
+
         // Get the raw representation of the public key.
         let rawPublicKey = publicKey.rawRepresentation
 
@@ -45,36 +45,33 @@ func createJwtWithCK()  -> String?{
             "x": xCoordinateBase64,
             "y": yCoordinateBase64
         ] as [String : Any]
-        
+
          let headersData = try JSONSerialization.data(withJSONObject: headers)
          let headersB64 = base64UrlEncoded(headersData)
-         
+
 
         // construct claims
         let iat = Int(Date().timeIntervalSince1970)
         let jti = UUID().uuidString.lowercased()
-    
+
         let claims: [String: Any] = ["iat": iat, "jti": jti]
         let claimsData = try JSONSerialization.data(withJSONObject: claims)
         let claimsB64 = base64UrlEncoded(claimsData)
-        
+
         /// sign
         let signingInput = headersB64 + "." + claimsB64
         let signingInputData = signingInput.data(using: .utf8)!
-       
+
         let signature = try! privateKey.signature(for: signingInputData)
-        
+
         let signatureB64 = base64UrlEncoded(signature.rawRepresentation)
-        
+
         let jwt = signingInput + "." + signatureB64
-        
-        print(jwt)
-        
+
         return jwt
 
     } catch {
         // silently handled error
-        print("Failed to generate JWT: \(error)")
         return nil
     }
 

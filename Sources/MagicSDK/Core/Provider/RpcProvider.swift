@@ -49,7 +49,7 @@ public class RpcProvider: NetworkClient, Web3Provider {
         let newRequest = RPCRequest(method: request.method, params: request.params)
         
         // construct message data
-        let eventMessage = MagicRequestData(msgType: "\(msgType.rawValue)-\(urlBuilder.encodedParams)", payload: newRequest, rt: nil, jwt: createJwtWithCK())
+        let eventMessage = MagicRequestData(msgType: "\(msgType.rawValue)-\(urlBuilder.encodedParams)", payload: newRequest, rt: nil, jwt: createJwt())
         
         // encode to JSON
         firstly {
