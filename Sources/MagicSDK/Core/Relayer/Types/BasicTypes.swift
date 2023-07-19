@@ -20,14 +20,17 @@ enum OutboundMessageType: String, CaseIterable {
     case MAGIC_HANDLE_REQUEST
 }
 
-struct RequestData<T: Codable>: Codable {
+struct MagicRequestData<T: Codable>: Codable {
     
     let msgType: String
     let payload: T
+    let rt: String?
+    let jwt: String?
 }
 
-struct ResponseData<T: Codable>: Codable {
+struct MagicResponseData<T: Codable>: Codable {
     
     let msgType: String
     let response: T
+    let rt: String?
 }

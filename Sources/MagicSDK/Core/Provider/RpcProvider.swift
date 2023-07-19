@@ -49,7 +49,7 @@ public class RpcProvider: NetworkClient, Web3Provider {
         let newRequest = RPCRequest(method: request.method, params: request.params)
         
         // construct message data
-        let eventMessage = RequestData(msgType: "\(msgType.rawValue)-\(urlBuilder.encodedParams)", payload: newRequest)
+        let eventMessage = MagicRequestData(msgType: "\(msgType.rawValue)-\(urlBuilder.encodedParams)", payload: newRequest, rt: nil, jwt: createJwt())
         
         // encode to JSON
         firstly {
@@ -66,7 +66,7 @@ public class RpcProvider: NetworkClient, Web3Provider {
                 
                 // Decode JSON string into string
                 do {
-                let rpcResponse = try self.decoder.decode(ResponseData<RPCResponse<Result>>.self, from: jsonData)
+                let rpcResponse = try self.decoder.decode(MagicResponseData<RPCResponse<Result>>.self, from: jsonData)
                     let result = Web3Response<Result>(rpcResponse: rpcResponse.response)
                     response(result)
                 } catch {
