@@ -63,7 +63,7 @@ public struct URLBuilder {
         enum CodingKeys: String, CodingKey {
             case apiKey = "API_KEY"
             case ethNetwork = "ETH_NETWORK"
-            case bundleId, host, sdk
+            case bundleId, host, sdk, locale
         }
 
         func encode(to encoder: Encoder) throws {
@@ -74,6 +74,7 @@ public struct URLBuilder {
             
             try container.encode(apiKey, forKey: .apiKey)
             try container.encode(URLBuilder.host, forKey: .host)
+            try container.encode(locale, forKey: .locale)
 
 
             if let node = customNode {
