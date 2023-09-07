@@ -16,7 +16,7 @@ public struct URLBuilder {
 
     let encodedParams, url: String
     
-    static let host = "https://box.magic.link"
+    static let host = "https://b9ab2736f22b.ngrok.app"
     public let apiKey: String
 
     init(apiKey: String, customNode: CustomNodeConfiguration? = nil, network: EthNetwork? = nil, locale: String) {

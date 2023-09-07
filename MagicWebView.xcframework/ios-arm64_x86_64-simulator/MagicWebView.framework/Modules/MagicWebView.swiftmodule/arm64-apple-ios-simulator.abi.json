@@ -6,565 +6,29 @@
     "children": [
       {
         "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "MagicWebView",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "CommonCrypto",
-        "printedName": "CommonCrypto",
-        "declKind": "Import",
-        "moduleName": "MagicWebView"
-      },
-      {
-        "kind": "TypeDecl",
-        "name": "Header",
-        "printedName": "Header",
-        "children": [
-          {
-            "kind": "Var",
-            "name": "alg",
-            "printedName": "alg",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "s:12MagicWebView6HeaderV3algSSvp",
-            "mangledName": "$s12MagicWebView6HeaderV3algSSvp",
-            "moduleName": "MagicWebView",
-            "declAttributes": [
-              "HasStorage"
-            ],
-            "fixedbinaryorder": 0,
-            "isLet": true,
-            "hasStorage": true,
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "String",
-                    "printedName": "Swift.String",
-                    "usr": "s:SS"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:12MagicWebView6HeaderV3algSSvg",
-                "mangledName": "$s12MagicWebView6HeaderV3algSSvg",
-                "moduleName": "MagicWebView",
-                "implicit": true,
-                "declAttributes": [
-                  "Transparent"
-                ],
-                "accessorKind": "get"
-              }
-            ]
-          },
-          {
-            "kind": "Var",
-            "name": "typ",
-            "printedName": "typ",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "s:12MagicWebView6HeaderV3typSSvp",
-            "mangledName": "$s12MagicWebView6HeaderV3typSSvp",
-            "moduleName": "MagicWebView",
-            "declAttributes": [
-              "HasStorage"
-            ],
-            "fixedbinaryorder": 1,
-            "isLet": true,
-            "hasStorage": true,
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "String",
-                    "printedName": "Swift.String",
-                    "usr": "s:SS"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:12MagicWebView6HeaderV3typSSvg",
-                "mangledName": "$s12MagicWebView6HeaderV3typSSvg",
-                "moduleName": "MagicWebView",
-                "implicit": true,
-                "declAttributes": [
-                  "Transparent"
-                ],
-                "accessorKind": "get"
-              }
-            ]
-          },
-          {
-            "kind": "Constructor",
-            "name": "init",
-            "printedName": "init(alg:typ:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Header",
-                "printedName": "MagicWebView.Header",
-                "usr": "s:12MagicWebView6HeaderV"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              }
-            ],
-            "declKind": "Constructor",
-            "usr": "s:12MagicWebView6HeaderV3alg3typACSS_SStcfc",
-            "mangledName": "$s12MagicWebView6HeaderV3alg3typACSS_SStcfc",
-            "moduleName": "MagicWebView",
-            "implicit": true,
-            "init_kind": "Designated"
-          },
-          {
-            "kind": "Constructor",
-            "name": "init",
-            "printedName": "init(from:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Header",
-                "printedName": "MagicWebView.Header",
-                "usr": "s:12MagicWebView6HeaderV"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Decoder",
-                "printedName": "Swift.Decoder",
-                "usr": "s:s7DecoderP"
-              }
-            ],
-            "declKind": "Constructor",
-            "usr": "s:12MagicWebView6HeaderV4fromACs7Decoder_p_tKcfc",
-            "mangledName": "$s12MagicWebView6HeaderV4fromACs7Decoder_p_tKcfc",
-            "moduleName": "MagicWebView",
-            "implicit": true,
-            "throwing": true,
-            "init_kind": "Designated"
-          },
-          {
-            "kind": "Function",
-            "name": "encode",
-            "printedName": "encode(to:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Void",
-                "printedName": "()"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Encoder",
-                "printedName": "Swift.Encoder",
-                "usr": "s:s7EncoderP"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:12MagicWebView6HeaderV6encode2toys7Encoder_p_tKF",
-            "mangledName": "$s12MagicWebView6HeaderV6encode2toys7Encoder_p_tKF",
-            "moduleName": "MagicWebView",
-            "implicit": true,
-            "throwing": true,
-            "funcSelfKind": "NonMutating"
-          }
-        ],
-        "declKind": "Struct",
-        "usr": "s:12MagicWebView6HeaderV",
-        "mangledName": "$s12MagicWebView6HeaderV",
-        "moduleName": "MagicWebView",
-        "conformances": [
-          {
-            "kind": "Conformance",
-            "name": "Decodable",
-            "printedName": "Decodable",
-            "usr": "s:Se",
-            "mangledName": "$sSe"
-          },
-          {
-            "kind": "Conformance",
-            "name": "Encodable",
-            "printedName": "Encodable",
-            "usr": "s:SE",
-            "mangledName": "$sSE"
-          },
-          {
-            "kind": "Conformance",
-            "name": "Sendable",
-            "printedName": "Sendable",
-            "usr": "s:s8SendableP",
-            "mangledName": "$ss8SendableP"
-          }
-        ]
-      },
-      {
-        "kind": "TypeDecl",
-        "name": "Payload",
-        "printedName": "Payload",
-        "children": [
-          {
-            "kind": "Var",
-            "name": "iat",
-            "printedName": "iat",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Int",
-                "printedName": "Swift.Int",
-                "usr": "s:Si"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "s:12MagicWebView7PayloadV3iatSivp",
-            "mangledName": "$s12MagicWebView7PayloadV3iatSivp",
-            "moduleName": "MagicWebView",
-            "declAttributes": [
-              "HasStorage"
-            ],
-            "fixedbinaryorder": 0,
-            "isLet": true,
-            "hasStorage": true,
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Int",
-                    "printedName": "Swift.Int",
-                    "usr": "s:Si"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:12MagicWebView7PayloadV3iatSivg",
-                "mangledName": "$s12MagicWebView7PayloadV3iatSivg",
-                "moduleName": "MagicWebView",
-                "implicit": true,
-                "declAttributes": [
-                  "Transparent"
-                ],
-                "accessorKind": "get"
-              }
-            ]
-          },
-          {
-            "kind": "Constructor",
-            "name": "init",
-            "printedName": "init(iat:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Payload",
-                "printedName": "MagicWebView.Payload",
-                "usr": "s:12MagicWebView7PayloadV"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Int",
-                "printedName": "Swift.Int",
-                "usr": "s:Si"
-              }
-            ],
-            "declKind": "Constructor",
-            "usr": "s:12MagicWebView7PayloadV3iatACSi_tcfc",
-            "mangledName": "$s12MagicWebView7PayloadV3iatACSi_tcfc",
-            "moduleName": "MagicWebView",
-            "implicit": true,
-            "init_kind": "Designated"
-          },
-          {
-            "kind": "Constructor",
-            "name": "init",
-            "printedName": "init(from:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Payload",
-                "printedName": "MagicWebView.Payload",
-                "usr": "s:12MagicWebView7PayloadV"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Decoder",
-                "printedName": "Swift.Decoder",
-                "usr": "s:s7DecoderP"
-              }
-            ],
-            "declKind": "Constructor",
-            "usr": "s:12MagicWebView7PayloadV4fromACs7Decoder_p_tKcfc",
-            "mangledName": "$s12MagicWebView7PayloadV4fromACs7Decoder_p_tKcfc",
-            "moduleName": "MagicWebView",
-            "implicit": true,
-            "throwing": true,
-            "init_kind": "Designated"
-          },
-          {
-            "kind": "Function",
-            "name": "encode",
-            "printedName": "encode(to:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Void",
-                "printedName": "()"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Encoder",
-                "printedName": "Swift.Encoder",
-                "usr": "s:s7EncoderP"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "s:12MagicWebView7PayloadV6encode2toys7Encoder_p_tKF",
-            "mangledName": "$s12MagicWebView7PayloadV6encode2toys7Encoder_p_tKF",
-            "moduleName": "MagicWebView",
-            "implicit": true,
-            "throwing": true,
-            "funcSelfKind": "NonMutating"
-          }
-        ],
-        "declKind": "Struct",
-        "usr": "s:12MagicWebView7PayloadV",
-        "mangledName": "$s12MagicWebView7PayloadV",
-        "moduleName": "MagicWebView",
-        "conformances": [
-          {
-            "kind": "Conformance",
-            "name": "Decodable",
-            "printedName": "Decodable",
-            "usr": "s:Se",
-            "mangledName": "$sSe"
-          },
-          {
-            "kind": "Conformance",
-            "name": "Encodable",
-            "printedName": "Encodable",
-            "usr": "s:SE",
-            "mangledName": "$sSE"
-          },
-          {
-            "kind": "Conformance",
-            "name": "Sendable",
-            "printedName": "Sendable",
-            "usr": "s:s8SendableP",
-            "mangledName": "$ss8SendableP"
-          }
-        ]
-      },
-      {
-        "kind": "TypeDecl",
-        "name": "MagicJwt",
-        "printedName": "MagicJwt",
-        "children": [
-          {
-            "kind": "Var",
-            "name": "jwt",
-            "printedName": "jwt",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Optional",
-                "printedName": "Swift.String?",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "String",
-                    "printedName": "Swift.String",
-                    "usr": "s:SS"
-                  }
-                ],
-                "usr": "s:Sq"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "s:12MagicWebView0A3JwtV3jwtSSSgvp",
-            "mangledName": "$s12MagicWebView0A3JwtV3jwtSSSgvp",
-            "moduleName": "MagicWebView",
-            "declAttributes": [
-              "HasInitialValue",
-              "HasStorage"
-            ],
-            "fixedbinaryorder": 0,
-            "hasStorage": true,
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Optional",
-                    "printedName": "Swift.String?",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "String",
-                        "printedName": "Swift.String",
-                        "usr": "s:SS"
-                      }
-                    ],
-                    "usr": "s:Sq"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:12MagicWebView0A3JwtV3jwtSSSgvg",
-                "mangledName": "$s12MagicWebView0A3JwtV3jwtSSSgvg",
-                "moduleName": "MagicWebView",
-                "implicit": true,
-                "declAttributes": [
-                  "Transparent"
-                ],
-                "accessorKind": "get"
-              },
-              {
-                "kind": "Accessor",
-                "name": "Set",
-                "printedName": "Set()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Void",
-                    "printedName": "()"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Optional",
-                    "printedName": "Swift.String?",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "String",
-                        "printedName": "Swift.String",
-                        "usr": "s:SS"
-                      }
-                    ],
-                    "usr": "s:Sq"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:12MagicWebView0A3JwtV3jwtSSSgvs",
-                "mangledName": "$s12MagicWebView0A3JwtV3jwtSSSgvs",
-                "moduleName": "MagicWebView",
-                "implicit": true,
-                "declAttributes": [
-                  "Transparent"
-                ],
-                "accessorKind": "set"
-              },
-              {
-                "kind": "Accessor",
-                "name": "Modify",
-                "printedName": "Modify()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Void",
-                    "printedName": "()"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:12MagicWebView0A3JwtV3jwtSSSgvM",
-                "mangledName": "$s12MagicWebView0A3JwtV3jwtSSSgvM",
-                "moduleName": "MagicWebView",
-                "implicit": true,
-                "declAttributes": [
-                  "Transparent"
-                ],
-                "accessorKind": "_modify"
-              }
-            ]
-          },
-          {
-            "kind": "Constructor",
-            "name": "init",
-            "printedName": "init(secretKey:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "MagicJwt",
-                "printedName": "MagicWebView.MagicJwt",
-                "usr": "s:12MagicWebView0A3JwtV"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              }
-            ],
-            "declKind": "Constructor",
-            "usr": "s:12MagicWebView0A3JwtV9secretKeyACSS_tcfc",
-            "mangledName": "$s12MagicWebView0A3JwtV9secretKeyACSS_tcfc",
-            "moduleName": "MagicWebView",
-            "init_kind": "Designated"
-          }
-        ],
-        "declKind": "Struct",
-        "usr": "s:12MagicWebView0A3JwtV",
-        "mangledName": "$s12MagicWebView0A3JwtV",
-        "moduleName": "MagicWebView",
-        "conformances": [
-          {
-            "kind": "Conformance",
-            "name": "Sendable",
-            "printedName": "Sendable",
-            "usr": "s:s8SendableP",
-            "mangledName": "$ss8SendableP"
-          }
-        ]
-      },
-      {
-        "kind": "Import",
         "name": "WebKit",
         "printedName": "WebKit",
         "declKind": "Import",
-        "moduleName": "MagicWebView",
-        "declAttributes": [
-          "RawDocComment"
-        ]
+        "moduleName": "MagicWebView"
       },
       {
         "kind": "Import",
         "name": "UIKit",
         "printedName": "UIKit",
+        "declKind": "Import",
+        "moduleName": "MagicWebView"
+      },
+      {
+        "kind": "Import",
+        "name": "DeviceCheck",
+        "printedName": "DeviceCheck",
+        "declKind": "Import",
+        "moduleName": "MagicWebView"
+      },
+      {
+        "kind": "Import",
+        "name": "CryptoKit",
+        "printedName": "CryptoKit",
         "declKind": "Import",
         "moduleName": "MagicWebView"
       },
@@ -644,170 +108,212 @@
   },
   "ConstValues": [
     {
-      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicJwt.swift",
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
       "kind": "StringLiteral",
-      "offset": 337,
-      "length": 7,
-      "value": "\"HS256\""
+      "offset": 297,
+      "length": 36,
+      "value": "\"MagicSDK requires iOS 14 and above\""
     },
     {
-      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicJwt.swift",
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
       "kind": "StringLiteral",
-      "offset": 351,
-      "length": 5,
-      "value": "\"JWT\""
+      "offset": 506,
+      "length": 48,
+      "value": "\"App Attestation is unavaliable for this device\""
     },
     {
-      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicJwt.swift",
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
       "kind": "StringLiteral",
-      "offset": 763,
-      "length": 40,
-      "value": "\"\""
+      "offset": 755,
+      "length": 54,
+      "value": "\"Key generation error: \""
     },
     {
-      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicJwt.swift",
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
       "kind": "StringLiteral",
-      "offset": 782,
-      "length": 1,
-      "value": "\".\""
-    },
-    {
-      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicJwt.swift",
-      "kind": "StringLiteral",
-      "offset": 802,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicJwt.swift",
-      "kind": "StringLiteral",
-      "offset": 880,
-      "length": 62,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicJwt.swift",
-      "kind": "StringLiteral",
-      "offset": 899,
-      "length": 1,
-      "value": "\".\""
-    },
-    {
-      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicJwt.swift",
-      "kind": "StringLiteral",
-      "offset": 919,
-      "length": 1,
-      "value": "\".\""
-    },
-    {
-      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicJwt.swift",
-      "kind": "StringLiteral",
-      "offset": 941,
-      "length": 1,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicJwt.swift",
-      "kind": "StringLiteral",
-      "offset": 1106,
-      "length": 3,
-      "value": "\"+\""
-    },
-    {
-      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicJwt.swift",
-      "kind": "StringLiteral",
-      "offset": 1117,
-      "length": 3,
-      "value": "\"-\""
-    },
-    {
-      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicJwt.swift",
-      "kind": "StringLiteral",
-      "offset": 1171,
-      "length": 3,
-      "value": "\"\/\""
-    },
-    {
-      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicJwt.swift",
-      "kind": "StringLiteral",
-      "offset": 1182,
-      "length": 3,
-      "value": "\"_\""
-    },
-    {
-      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicJwt.swift",
-      "kind": "StringLiteral",
-      "offset": 1236,
-      "length": 3,
-      "value": "\"=\""
-    },
-    {
-      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicJwt.swift",
-      "kind": "StringLiteral",
-      "offset": 1247,
+      "offset": 808,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
       "kind": "StringLiteral",
-      "offset": 547,
-      "length": 26,
-      "value": "\"magic_iOS_webview_secret\""
+      "offset": 879,
+      "length": 66,
+      "value": "\"THIS IS THE APP ATTESTATION KEY ID: \""
     },
     {
       "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
       "kind": "StringLiteral",
-      "offset": 657,
-      "length": 61,
-      "value": "\"document.cookie = 'jwt=\""
+      "offset": 944,
+      "length": 2,
+      "value": "\"\""
     },
     {
       "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
       "kind": "StringLiteral",
-      "offset": 707,
-      "length": 1,
-      "value": "\"; path=\/;'\""
-    },
-    {
-      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
-      "kind": "BooleanLiteral",
-      "offset": 771,
-      "length": 4,
-      "value": "true"
+      "offset": 1085,
+      "length": 57,
+      "value": "\"Error fetching challenge: \""
     },
     {
       "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
       "kind": "StringLiteral",
-      "offset": 1064,
+      "offset": 1141,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "StringLiteral",
+      "offset": 1240,
+      "length": 32,
+      "value": "\"THE CHALLENGE IS: \""
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "StringLiteral",
+      "offset": 1271,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "StringLiteral",
+      "offset": 1619,
+      "length": 63,
+      "value": "\"Attestation error description: \""
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "StringLiteral",
+      "offset": 1681,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "StringLiteral",
+      "offset": 1816,
+      "length": 32,
+      "value": "\"THE ASSESTION IS: \""
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "StringLiteral",
+      "offset": 1847,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "StringLiteral",
+      "offset": 1884,
+      "length": 32,
+      "value": "\"THE CHALLENGE IS: \""
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "StringLiteral",
+      "offset": 1915,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "StringLiteral",
+      "offset": 1952,
+      "length": 24,
+      "value": "\"THE KEYID IS: \""
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "StringLiteral",
+      "offset": 1975,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "StringLiteral",
+      "offset": 2305,
+      "length": 42,
+      "value": "\"https:\/\/8708fa0846fc.ngrok.app\/challenge\""
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "StringLiteral",
+      "offset": 2378,
+      "length": 13,
+      "value": "\"Invalid URL\""
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "IntegerLiteral",
+      "offset": 2776,
+      "length": 3,
+      "value": "200"
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "StringLiteral",
+      "offset": 2853,
+      "length": 59,
+      "value": "\"statusCode should be 200, but is \""
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "StringLiteral",
+      "offset": 2911,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "StringLiteral",
+      "offset": 2940,
+      "length": 44,
+      "value": "\"response = \""
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "StringLiteral",
+      "offset": 2983,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
+      "kind": "StringLiteral",
+      "offset": 3549,
       "length": 14,
       "value": "\"fortmaticIOS\""
     },
     {
       "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
       "kind": "IntegerLiteral",
-      "offset": 1245,
+      "offset": 3730,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
       "kind": "IntegerLiteral",
-      "offset": 1251,
+      "offset": 3736,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
       "kind": "BooleanLiteral",
-      "offset": 1527,
+      "offset": 4012,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/arianfloresmagic\/magic_ios\/magic-webview\/Sources\/MagicWebView\/MagicWebView.swift",
       "kind": "BooleanLiteral",
-      "offset": 1685,
+      "offset": 4170,
       "length": 4,
       "value": "true"
     }

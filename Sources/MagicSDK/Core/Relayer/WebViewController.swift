@@ -84,7 +84,6 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
     /// handler for received messages
     /// conforming WKScriptMessageHandler
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-
         do {
             if message.name == messageName {
                 guard let payloadStr = message.body as? String else { return }

@@ -10,15 +10,15 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		ykqHtIRBMIBiihkoAajwnZT7MdE=
+		wDQrJ/nzIDgMu3UIQ1Gp76QgBBA=
 		</data>
 		<key>Modules/MagicWebView.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		aPJp2psj+oUG6y9wmo2pyVnHWyw=
+		+0AC5/K91OfCkDVMTbVk33ipXs0=
 		</data>
 		<key>Modules/MagicWebView.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		uUTmi8VrqksQxbrpU4iAIEh7Fl0=
+		Mjch1+BSjYK9vJaoVbD0iwdrTWo=
 		</data>
 		<key>Modules/MagicWebView.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -26,19 +26,19 @@
 		</data>
 		<key>Modules/MagicWebView.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		uUTmi8VrqksQxbrpU4iAIEh7Fl0=
+		Mjch1+BSjYK9vJaoVbD0iwdrTWo=
 		</data>
 		<key>Modules/MagicWebView.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		MgjU5lN79d8dVO0ELwKC81AZQbA=
+		Rdfq/rlh3iwMma16hFd4KetkEvA=
 		</data>
 		<key>Modules/MagicWebView.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		aPJp2psj+oUG6y9wmo2pyVnHWyw=
+		+0AC5/K91OfCkDVMTbVk33ipXs0=
 		</data>
 		<key>Modules/MagicWebView.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		486Z4Gy3++dHDowzZ8fdMl6tYXo=
+		XWFj/szmoflGIgrqDm7wZjFSjYw=
 		</data>
 		<key>Modules/MagicWebView.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -46,11 +46,11 @@
 		</data>
 		<key>Modules/MagicWebView.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		486Z4Gy3++dHDowzZ8fdMl6tYXo=
+		XWFj/szmoflGIgrqDm7wZjFSjYw=
 		</data>
 		<key>Modules/MagicWebView.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		fXRJxRNvM2dX+tqrzEf6Z6kPSlw=
+		gRjFLpI9VuPfqjDdYGHWWS0fsWw=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -66,14 +66,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			xTqMqmKAizzPhkU23vscG3XV6LDNuxgppl+DQyPb1HM=
+			ANXTLnGw5ERpPyiq7oPTtXlLdd4YneBJXS63HXCejTw=
 			</data>
 		</dict>
 		<key>Modules/MagicWebView.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			+/84Wq95Jt7jul3oJSI6/i2TvdN7a+NS5kD91UUv7wA=
+			U0RWI0hV3NbyjgpcIps/aJPAVd3rTSqGrgx3NmQIJKE=
 			</data>
 		</dict>
 		<key>Modules/MagicWebView.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
@@ -87,28 +87,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			+/84Wq95Jt7jul3oJSI6/i2TvdN7a+NS5kD91UUv7wA=
+			U0RWI0hV3NbyjgpcIps/aJPAVd3rTSqGrgx3NmQIJKE=
 			</data>
 		</dict>
 		<key>Modules/MagicWebView.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			aQdLK3gCuOAwAAyH922bF44JDCSqIdK/9+TiY6SDxjg=
+			WAXt6CwPfnkJ03QGsitifgk61SOliqK5a+7w1eLUWuU=
 			</data>
 		</dict>
 		<key>Modules/MagicWebView.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			xTqMqmKAizzPhkU23vscG3XV6LDNuxgppl+DQyPb1HM=
+			ANXTLnGw5ERpPyiq7oPTtXlLdd4YneBJXS63HXCejTw=
 			</data>
 		</dict>
 		<key>Modules/MagicWebView.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			j7ElAnfSaY5zVK/dQUQomSeD3eWoky9vwDfye4rqEcI=
+			QqXagLtOe9KoHtezAQuDW6gy4Jt4hyw/5LR09pJREbE=
 			</data>
 		</dict>
 		<key>Modules/MagicWebView.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
@@ -122,14 +122,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			j7ElAnfSaY5zVK/dQUQomSeD3eWoky9vwDfye4rqEcI=
+			QqXagLtOe9KoHtezAQuDW6gy4Jt4hyw/5LR09pJREbE=
 			</data>
 		</dict>
 		<key>Modules/MagicWebView.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			u9/YqEtH/S9POEHHyiPhOoMoksBs63oFgdvUs5u3ehM=
+			nGCtoy6pOLDNJFhkbjd0H9FnyGfu6/xYf9jqJqJtpgE=
 			</data>
 		</dict>
 	</dict>
