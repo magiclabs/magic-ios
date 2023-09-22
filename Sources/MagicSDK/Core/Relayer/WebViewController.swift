@@ -8,10 +8,16 @@
 
 import WebKit
 import UIKit
+import os
 
 /// An instance of the Fortmatc Phantom WebView
 class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler, WKNavigationDelegate, UIScrollViewDelegate {
-
+    @available(iOS 14.0, *)
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: WebViewController.self)
+    )
+    
     /// Various errors that may occur while processing Web3 requests
     public enum AuthRelayerError: Error {
 
@@ -99,6 +105,8 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
                     try handleEvent(payloadStr: payloadStr)
                 } else if payloadStr.contains(InboundMessageType.MAGIC_HANDLE_RESPONSE.rawValue) {
                     try handleResponse(payloadStr: payloadStr)
+                } else if payloadStr.contains(InboundMessageType.MAGIC_SEND_PRODUCT_TYPE.rawValue) {
+                    try maybeWarnUniversalWalletDeveloper(payloadStr: payloadStr)
                 }
             }
             try self.dequeue()
@@ -143,6 +151,28 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
             throw RpcProvider.ProviderError.invalidJsonResponse(json: payloadStr)
         }
     }
+    
+    private func maybeWarnUniversalWalletDeveloper(payloadStr: String) throws -> Void {
+        let warningMessage = "Usage of Universal Wallet API Keys will be removed from magic-ios in version `v10.0.0`. Use a Dedicated Wallet API Key instead to prevent disruption of the wallet service."
+        
+        // Decoding the JSON string into the Payload struct
+        guard let data = payloadStr.data(using: .utf8) else {
+            throw NSError(domain: "Invalid payload string", code: 1001, userInfo: nil)
+        }
+        
+        let decoder = JSONDecoder()
+        let payload = try decoder.decode(ProductTypePayload.self, from: data)
+        
+        // Checking if product_type is "connect"
+        if payload.response.product_type == "connect" {
+            if #available(iOS 14.0, *) {
+                os_log("%{public}@", log: .default, type: .info, warningMessage)
+            } else {
+                print(warningMessage)
+            }
+        }
+    }
+
 
 
     // MARK: - Post Messages
