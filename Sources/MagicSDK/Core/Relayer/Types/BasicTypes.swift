@@ -14,6 +14,7 @@ enum InboundMessageType: String, CaseIterable {
     case MAGIC_SHOW_OVERLAY
     case MAGIC_HIDE_OVERLAY
     case MAGIC_HANDLE_EVENT
+    case MAGIC_SEND_PRODUCT_TYPE
 }
 
 enum OutboundMessageType: String, CaseIterable {
