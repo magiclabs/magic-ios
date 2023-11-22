@@ -60,22 +60,22 @@ public class UserModule: BaseModule {
     
     
     /**
-            Get Metadata
+            Get Info
      */
-    public func getMetadata(response: @escaping Web3ResponseCompletion<UserMetadata>) {
+    public func getInfo(response: @escaping Web3ResponseCompletion<UserInfo>) {
         if #available(iOS 14.0, *) {
-            UserModule.logger.warning("getMetadata: \(BaseWarningLog.MA_Method)")
+            UserModule.logger.warning("getInfo: \(BaseWarningLog.MA_Method)")
         } else {
-            print("getMetadata: \(BaseWarningLog.MA_Method)")
+            print("getInfo: \(BaseWarningLog.MA_Method)")
         }
         
-        let request = BasicRPCRequest(method: UserMethod.magic_auth_get_metadata.rawValue, params: [])
+        let request = BasicRPCRequest(method: UserMethod.magic_get_info.rawValue, params: [])
         return self.provider.send(request: request, response: response)
     }
     
-    public func getMetadata() -> Promise<UserMetadata>  {
+    public func getInfo() -> Promise<UserInfo>  {
         return Promise { resolver in
-            getMetadata(response: promiseResolver(resolver))
+            getInfo(response: promiseResolver(resolver))
         }
     }
     
@@ -141,7 +141,7 @@ public class UserModule: BaseModule {
     /**
         showSettings
      */
-    public func showSettings(response: @escaping Web3ResponseCompletion<UserMetadata>) {
+    public func showSettings(response: @escaping Web3ResponseCompletion<UserInfo>) {
         if #available(iOS 14.0, *) {
             UserModule.logger.warning("showSettings: \(BaseWarningLog.MA_Method)")
         } else {
@@ -152,7 +152,7 @@ public class UserModule: BaseModule {
         self.provider.send(request: request, response: response)
     }
     
-    public func showSettings() -> Promise<UserMetadata> {
+    public func showSettings() -> Promise<UserInfo> {
         return Promise { resolver in
             showSettings(response: promiseResolver(resolver))
         }

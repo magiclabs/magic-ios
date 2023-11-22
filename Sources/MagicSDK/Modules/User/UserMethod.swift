@@ -13,7 +13,7 @@ internal enum UserMethod: String, CaseIterable {
     // Auth
     case magic_auth_get_id_token
     case magic_auth_generate_id_token
-    case magic_auth_get_metadata
+    case magic_get_info
     case magic_auth_logout
     case magic_auth_settings
     case magic_auth_update_email
