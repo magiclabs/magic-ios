@@ -8,6 +8,7 @@
 
 import WebKit
 import UIKit
+import Combine
 
 /// An instance of the Fortmatc Phantom WebView
 class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler, WKNavigationDelegate, UIScrollViewDelegate {
@@ -25,7 +26,8 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
     /// This name is reserved for internal use
     let messageName = "fortmaticIOS"
 
-    var webView: WKWebView!
+    var webView: WKWebView?
+    var cancellables: Set<AnyCancellable> = []
 
     /// X source url
     var urlBuilder: URLBuilder!
@@ -158,62 +160,32 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
               let jsonString = String(data: json, encoding: .utf8) else {
             throw AuthRelayerError.messageEncodeFailed(message: message)
         }
-
+        
         let execString = String(format: "window.dispatchEvent(new MessageEvent('message', \(jsonString)));")
+        
+        guard let webView = webView else { throw AuthRelayerError.webviewAttachedFailed }
+        
         webView.evaluateJavaScript(execString)
-    }
-
-
-
-
-    // MARK: - view loading
-    /// loadView will be triggered when addsubview is called. It will create a webview to post messages to auth relayer
-    override func loadView() {
-
-        // Display Full screen
-        let cgRect = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-        let webView: WKWebView = {
-
-            let webCfg:WKWebViewConfiguration = WKWebViewConfiguration()
-            let userController:WKUserContentController = WKUserContentController()
-
-            // Add a script message handler for receiving messages over `fortmatic` messageHandler. The controller needs to conform
-            // with WKScriptMessageHandler protocol
-            userController.add(self, name: messageName)
-            webCfg.userContentController = userController;
-
-            let webView = WKWebView(frame: cgRect, configuration: webCfg)
-
-            // Transparent background
-            webView.backgroundColor = UIColor.clear
-            webView.scrollView.backgroundColor = UIColor.clear
-            webView.isOpaque = false
-
-            webView.uiDelegate = self
-
-            if #available(macOS 13.3, iOS 16.4, tvOS 16.4, *) {
-                webView.isInspectable = true
-            }
-
-            // conforming WKNavigationDelegate
-            webView.navigationDelegate = self
-
-            return webView
-        }()
-        self.webView = webView
-        view = webView
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        let myURL = URL(string: urlBuilder.url)
-        let myRequest = URLRequest(url: myURL!)
-        webView.load(myRequest)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        webView.scrollView.delegate = self // disable zoom
+        /**
+         * TODO: Read a post message from relayer indicating if the API Key provided as enabled App Attestation or not on the Magic Dashboard befroe running this check.
+         */
+        MagicWebView.checkAppAttestation(for: self)
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { [weak self] completion in
+                    if case .failure(let error) = completion {
+                        self?.webViewCreationFailed(error)
+                    }
+                },
+                receiveValue: { [weak self] webView in
+                    self?.webViewCreated(webView)
+                }
+            )
+            .store(in: &cancellables)
     }
 
     /// Check did finished navigating, conforming WKNavigationDelegate
@@ -316,6 +288,31 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
 
         } else {
             throw AuthRelayerError.webviewAttachedFailed
+        }
+    }
+}
+
+extension WebViewController: MagicWebViewDelegate {
+
+    func webViewCreated(_ webView: WKWebView) {
+        DispatchQueue.main.async {
+            self.webView = webView
+            self.webView?.scrollView.delegate = self // disable zoom
+            
+            self.view = webView
+            
+            // Load the request here
+            let myURL = URL(string: self.urlBuilder.url)
+            let myRequest = URLRequest(url: myURL!)
+            webView.load(myRequest)
+        }
+    }
+
+    func webViewCreationFailed(_ error: Error) {
+        DispatchQueue.main.async {
+            // Handle the error
+            print("WebView creation failed: \(error.localizedDescription)")
+            self.view = UIView() // Placeholder for error handling
         }
     }
 }
