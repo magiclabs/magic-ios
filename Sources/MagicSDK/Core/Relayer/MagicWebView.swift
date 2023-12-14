@@ -54,7 +54,7 @@ public class MagicWebView {
             /**
              * TODO: When Formatic Backend portion is complete, this is where we'll be sending the attestation object and a awaiting a response confirming reciept
              */
-            print("THE ASSESTION IS: \(assertion)")
+            print("THE ASSERTION IS: \(assertion)")
             print("THE CHALLENGE IS: \(challenge)")
             print("THE KEYID IS: \(keyId)")
             
