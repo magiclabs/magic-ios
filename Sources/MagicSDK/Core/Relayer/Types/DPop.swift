@@ -62,7 +62,10 @@ func createJwt()  -> String?{
         let signingInput = headersB64 + "." + claimsB64
         let signingInputData = signingInput.data(using: .utf8)!
 
-        let signature = try! privateKey.signature(for: signingInputData)
+        guard let signature = try? privateKey.signature(for: signingInputData) else {
+            // This can happen when the [secure enclave biometrics](https://developer.apple.com/forums/thread/682162?answerId=726099022#726099022) have changed such as when an app is auto-installed on a new device
+            return nil
+        }
 
         let signatureB64 = base64UrlEncoded(signature.rawRepresentation)
 
