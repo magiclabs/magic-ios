@@ -155,9 +155,7 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
     
     private func makeProductAnnouncement(payloadStr: String) throws {
         // Decoding the JSON string into the Payload struct
-        guard let data = payloadStr.data(using: .utf8) else {
-            throw NSError(domain: "Invalid payload string", code: 1001, userInfo: nil)
-        }
+        guard let data = payloadStr.data(using: .utf8) else { return }
         
         // Define a typealias for the expected payload type
         typealias PayloadType = MagicResponseData<MagicEventResponse<ProductAnnouncement>>
@@ -169,9 +167,6 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
             } else {
                 print(announcement)
             }
-        } else {
-            // Handle missing announcement
-            print("No product announcement found")
         }
     }
 
