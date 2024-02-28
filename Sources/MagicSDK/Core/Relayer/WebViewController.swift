@@ -123,8 +123,9 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
 
         // post event to the obeserver
         let event = eventResponse.response
-        let eventName = event.result.event
-        NotificationCenter.default.post(name: Notification.Name.init(eventName), object: nil, userInfo: ["event": event.result])
+        if let eventName = event.result.event {
+            NotificationCenter.default.post(name: Notification.Name.init(eventName), object: nil, userInfo: ["event": event.result])
+        }
     }
 
     private func handleResponse(payloadStr: String) throws -> Void {
@@ -152,19 +153,25 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
         }
     }
     
-    private func makeProductAnnouncement(payloadStr: String) throws -> Void {
+    private func makeProductAnnouncement(payloadStr: String) throws {
         // Decoding the JSON string into the Payload struct
         guard let data = payloadStr.data(using: .utf8) else {
             throw NSError(domain: "Invalid payload string", code: 1001, userInfo: nil)
         }
         
-        let payload = try JSONDecoder().decode(AnnouncementResponse.self, from: data)
-        let announcement = payload.response.result.product_announcement
-        
-        if #available(iOS 14.0, *) {
-            os_log("%{public}@", log: .default, type: .info, announcement)
+        // Define a typealias for the expected payload type
+        typealias PayloadType = MagicResponseData<MagicEventResponse<ProductAnnouncement>>
+
+        let payload = try JSONDecoder().decode(PayloadType.self, from: data)
+        if let announcement = payload.response.result.product_announcement {
+            if #available(iOS 14.0, *) {
+                os_log("%{public}@", log: .default, type: .info, announcement)
+            } else {
+                print(announcement)
+            }
         } else {
-            print(announcement)
+            // Handle missing announcement
+            print("No product announcement found")
         }
     }
 
