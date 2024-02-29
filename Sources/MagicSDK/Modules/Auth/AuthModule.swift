@@ -52,7 +52,21 @@ public class AuthModule: BaseModule {
             loginWithEmailOTP(configuration, response: promiseResolver(resolver))
         }
     }
-    
+
+    public func cancelLogin() {
+        if #available(iOS 14.0, *) {
+            AuthModule.logger.warning("cancelLogin: \(BaseWarningLog.MA_Method)")
+        } else {
+            print("cancelLogin: \(BaseWarningLog.MA_Method)")
+        }
+
+        do {
+            try self.provider.webViewPresenter.hide()
+        } catch let error {
+            debugPrint("Failed to dismiss login view due to \(error.localizedDescription)")
+        }
+    }
+
     public enum LoginEmailOTPLinkEvent: String {
         case emailNotDeliverable = "email-not-deliverable"
         case emailSent = "email-sent"
