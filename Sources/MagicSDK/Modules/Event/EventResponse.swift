@@ -7,38 +7,9 @@
 
 import Foundation
 
-enum IDType: Codable {
-    case string(String)
-    case int(Int)
-    case none
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        if let str = try? container.decode(String.self) {
-            self = .string(str)
-        } else if let int = try? container.decode(Int.self) {
-            self = .int(int)
-        } else {
-            self = .none
-        }
-    }
-
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        switch self {
-            case .string(let str):
-                try container.encode(str)
-            case .int(let int):
-                try container.encode(int)
-            case .none:
-                try container.encodeNil()
-        }
-    }
-}
-
 
 internal struct MagicEventResponse<ResultType: Codable>: Codable {
-    public let id: IDType?
+    public let id: Int?
     public let jsonrpc: String
     public let result: MagicEventResult<ResultType?>
     public let error: Error?
