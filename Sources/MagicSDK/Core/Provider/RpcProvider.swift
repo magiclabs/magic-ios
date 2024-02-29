@@ -24,16 +24,18 @@ public class RpcProvider: NetworkClient, Web3Provider {
         /// Missing callback
         case missingPayloadCallback(json: String)
     }
-    
+
+    var webViewPresenter: WebViewControllerPresenting { overlay }
+
     let overlay: WebViewController
     public let urlBuilder: URLBuilder
     
-    required init(urlBuilder: URLBuilder) {
-        self.overlay = WebViewController(url: urlBuilder)
+    required init(urlBuilder: URLBuilder, viewHostProvider: MagicViewHostProviding) {
+        self.overlay = WebViewController(url: urlBuilder, viewHostProvider: viewHostProvider)
         self.urlBuilder = urlBuilder
         super.init()
     }
-    
+
     // MARK: - Sending Requests
     
     /// Sends an RPCRequest and parses the result

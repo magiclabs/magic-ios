@@ -9,6 +9,11 @@
 import WebKit
 import UIKit
 
+public protocol WebViewControllerPresenting {
+    func show() throws
+    func hide() throws
+}
+
 /// An instance of the Fortmatc Phantom WebView
 class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler, WKNavigationDelegate, UIScrollViewDelegate {
 
@@ -37,17 +42,20 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
     /// Queue and callbackss
     var queue: [String] = []
     var messageHandlers: Dictionary<Int, MessageHandler> = [:]
+    var viewHostProvider: MagicViewHostProviding
 
     typealias MessageHandler = (String) throws ->  Void
 
     // MARK: - init
-    init(url: URLBuilder) {
+    init(url: URLBuilder, viewHostProvider: MagicViewHostProviding) {
         self.urlBuilder = url
+        self.viewHostProvider = viewHostProvider
         super.init(nibName: nil, bundle: nil)
     }
 
     // Required provided by subclass of 'UIViewController'
     required init?(coder aDecoder: NSCoder) {
+        self.viewHostProvider = MagicViewHostProvider()
         super.init(coder: aDecoder)
     }
 
@@ -60,11 +68,8 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
 
     private func dequeue() throws -> Void {
 
-        // Check if UI is appeneded properly to current screen before dequeue
-        guard let window = UIApplication.shared.keyWindow else { return try attachWebView() }
-
-        if self.view.isDescendant(of: window) {
-
+        // Check if UI is appended properly to current screen before dequeue
+        if try isAttached() {
             if !queue.isEmpty && overlayReady && webViewFinishLoading {
                 let message = queue.removeFirst()
                 try self.postMessage(message: message)
@@ -92,9 +97,9 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
                     overlayReady = true
                     try? self.dequeue()
                 } else if payloadStr.contains(InboundMessageType.MAGIC_SHOW_OVERLAY.rawValue) {
-                    try bringWebViewToFront()
+                    try show()
                 } else if payloadStr.contains(InboundMessageType.MAGIC_HIDE_OVERLAY.rawValue) {
-                    try sendSubviewToBack()
+                    try hide()
                 } else if payloadStr.contains(InboundMessageType.MAGIC_HANDLE_EVENT.rawValue) {
                     try handleEvent(payloadStr: payloadStr)
                 } else if payloadStr.contains(InboundMessageType.MAGIC_HANDLE_RESPONSE.rawValue) {
@@ -102,7 +107,7 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
                 }
             }
             try self.dequeue()
-        }catch let error {
+        } catch let error {
             print("Magic internal error: \(error.localizedDescription)")
         }
     }
@@ -162,9 +167,6 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
         let execString = String(format: "window.dispatchEvent(new MessageEvent('message', \(jsonString)));")
         webView.evaluateJavaScript(execString)
     }
-
-
-
 
     // MARK: - view loading
     /// loadView will be triggered when addsubview is called. It will create a webview to post messages to auth relayer
@@ -246,30 +248,28 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
 
     // handle external link clicked events
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-            // Check for links.
-            if navigationAction.navigationType == .linkActivated {
-                // Make sure the URL is set.
-                guard let url = navigationAction.request.url else {
-                    decisionHandler(.allow)
-                    return
-                }
+        // Check for links.
+        if navigationAction.navigationType == .linkActivated {
+            // Make sure the URL is set.
+            guard let url = navigationAction.request.url else {
+                decisionHandler(.allow)
+                return
+            }
 
-                // Check for the scheme component.
-                let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
-                if components?.scheme == "http" || components?.scheme == "https" {
-                    // Open the link in the external browser.
-                    UIApplication.shared.open(url)
-                    // Cancel the decisionHandler because we managed the navigationAction.
-                    decisionHandler(.cancel)
-                } else {
-                    decisionHandler(.allow)
-                }
+            // Check for the scheme component.
+            let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+            if components?.scheme == "http" || components?.scheme == "https" {
+                // Open the link in the external browser.
+                UIApplication.shared.open(url)
+                // Cancel the decisionHandler because we managed the navigationAction.
+                decisionHandler(.cancel)
             } else {
                 decisionHandler(.allow)
             }
+        } else {
+            decisionHandler(.allow)
         }
-
-
+    }
 
     // MARK: - View
 
@@ -277,47 +277,44 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
     func viewForZooming(in: UIScrollView) -> UIView? {
         return nil;
     }
+}
 
-    private func sendSubviewToBack() throws -> Void {
-
-        let keyWindow = try getKeyWindow()
-        keyWindow.sendSubviewToBack(self.view)
-    }
-
-    private func bringWebViewToFront() throws -> Void {
-
-        let keyWindow = try getKeyWindow()
-        keyWindow.bringSubviewToFront(self.view)
-    }
-
-    private func getKeyWindow() throws -> UIWindow {
-
-        guard let keyWindow = UIApplication.shared.windows.filter({$0.isKeyWindow}).first else {
-            throw AuthRelayerError.topMostWindowNotFound
+extension WebViewController: WebViewControllerPresenting {
+    func show() throws {
+        let isAlreadyAttached = try isAttached()
+        let container = try viewHostProvider.provide()
+        
+        if !isAlreadyAttached {
+            try attachWebView()
         }
 
-        return keyWindow
+        container.view.bringSubviewToFront(view)
     }
 
-    private func attachWebView() throws -> Void {
-
-        let keyWindow = try getKeyWindow()
-
-        keyWindow.addSubview(self.view)
-        keyWindow.sendSubviewToBack(self.view)
-
-        // find topmost view controller from the hierarchy and move webview to it
-        if var topController = keyWindow.rootViewController {
-            while let presentedViewController = topController.presentedViewController {
-                topController = presentedViewController
-            }
-
-            self.didMove(toParent: topController)
-
-        } else {
-            throw AuthRelayerError.webviewAttachedFailed
-        }
+    func hide() throws {
+        try detachWebView()
     }
 }
 
+private extension WebViewController {
+    func isAttached() throws -> Bool {
+        let viewController = try viewHostProvider.provide()
+        return view.isDescendant(of: viewController.view)
+    }
 
+    func attachWebView() throws {
+        guard try !isAttached() else {
+            throw AuthRelayerError.webviewAttachedFailed
+        }
+        let container = try viewHostProvider.provide()
+        container.view.addSubview(view)
+        container.view.sendSubviewToBack(view)
+        self.didMove(toParent: container)
+    }
+
+    func detachWebView() throws {
+        guard try isAttached() else { return }
+        view.superview?.sendSubviewToBack(view)
+        view.removeFromSuperview()
+    }
+}
