@@ -279,6 +279,8 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
     }
 }
 
+// MARK: - Presentation
+
 extension WebViewController: WebViewControllerPresenting {
     func show() throws {
         let isAlreadyAttached = try isAttached()
@@ -295,6 +297,8 @@ extension WebViewController: WebViewControllerPresenting {
         try detachWebView()
     }
 }
+
+// MARK: - View Hierarchy Helpers
 
 private extension WebViewController {
     func isAttached() throws -> Bool {
