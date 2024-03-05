@@ -27,13 +27,13 @@ public class EventCenter {
     /// Recieve events
     @objc func onDidReceiveEventOnce(_ notification: Notification) {
 
-        if let eventResult = (notification.userInfo?["event"]) as? MagicEventResult<[AnyValue]>, let handler = eventHandlerDict[eventResult.event] {
+        if let eventResult = (notification.userInfo?["event"]) as? MagicEventResult<[AnyValue]>, let event = eventResult.event, let handler = eventHandlerDict[event] {
             
             if (eventLog) {
                 print("MagicSDK Event: \(eventResult)")
             }
             
-            NotificationCenter.default.removeObserver(self, name: Notification.Name(eventResult.event), object: nil)
+            NotificationCenter.default.removeObserver(self, name: Notification.Name(event), object: nil)
             handler()
         } else {
 //            handleRollbarError(Error.eventCallbackMissing)

@@ -8,10 +8,16 @@
 
 import WebKit
 import UIKit
+import os
 
 /// An instance of the Fortmatc Phantom WebView
 class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler, WKNavigationDelegate, UIScrollViewDelegate {
-
+    @available(iOS 14.0, *)
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: WebViewController.self)
+    )
+    
     /// Various errors that may occur while processing Web3 requests
     public enum AuthRelayerError: Error {
 
@@ -99,6 +105,8 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
                     try handleEvent(payloadStr: payloadStr)
                 } else if payloadStr.contains(InboundMessageType.MAGIC_HANDLE_RESPONSE.rawValue) {
                     try handleResponse(payloadStr: payloadStr)
+                } else if payloadStr.contains(InboundMessageType.MAGIC_SEND_PRODUCT_ANNOUNCEMENT.rawValue) {
+                    try makeProductAnnouncement(payloadStr: payloadStr)
                 }
             }
             try self.dequeue()
@@ -115,8 +123,9 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
 
         // post event to the obeserver
         let event = eventResponse.response
-        let eventName = event.result.event
-        NotificationCenter.default.post(name: Notification.Name.init(eventName), object: nil, userInfo: ["event": event.result])
+        if let eventName = event.result.event {
+            NotificationCenter.default.post(name: Notification.Name.init(eventName), object: nil, userInfo: ["event": event.result])
+        }
     }
 
     private func handleResponse(payloadStr: String) throws -> Void {
@@ -143,6 +152,24 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
             throw RpcProvider.ProviderError.invalidJsonResponse(json: payloadStr)
         }
     }
+    
+    private func makeProductAnnouncement(payloadStr: String) throws {
+        // Decoding the JSON string into the Payload struct
+        guard let data = payloadStr.data(using: .utf8) else { return }
+        
+        // Define a typealias for the expected payload type
+        typealias PayloadType = MagicResponseData<MagicEventResponse<ProductAnnouncement>>
+
+        let payload = try JSONDecoder().decode(PayloadType.self, from: data)
+        if let announcement = payload.response.result.product_announcement {
+            if #available(iOS 14.0, *) {
+                os_log("%{public}@", log: .default, type: .info, announcement)
+            } else {
+                print(announcement)
+            }
+        }
+    }
+
 
 
     // MARK: - Post Messages
