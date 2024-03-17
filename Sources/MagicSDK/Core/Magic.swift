@@ -34,21 +34,24 @@ public class Magic: NSObject {
     ///   - ethNetwork: Etherum Network setting (ie. mainnet or goerli)
     ///   - customNode: A custom RPC node
     ///   - viewHostProvider: An optional `UIViewController` provider for login views to embed within
-    public convenience init(apiKey: String, ethNetwork: EthNetwork, locale: String = Locale.current.identifier, viewHostProvider: MagicViewHostProviding? = nil) {
-        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: ethNetwork, locale: locale), viewHostProvider: viewHostProvider)
+    public convenience init(apiKey: String, ethNetwork: EthNetwork, locale: String = Locale.current.identifier) {
+        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: ethNetwork, locale: locale))
     }
 
-    public convenience init(apiKey: String, customNode: CustomNodeConfiguration, locale: String = Locale.current.identifier, viewHostProvider: MagicViewHostProviding? = nil) {
-        self.init(urlBuilder: URLBuilder(apiKey: apiKey, customNode: customNode, locale: locale), viewHostProvider: viewHostProvider)
+    public convenience init(apiKey: String, customNode: CustomNodeConfiguration, locale: String = Locale.current.identifier) {
+        self.init(urlBuilder: URLBuilder(apiKey: apiKey, customNode: customNode, locale: locale))
     }
 
-    public convenience init(apiKey: String, locale: String = Locale.current.identifier, viewHostProvider: MagicViewHostProviding? = nil) {
-        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: EthNetwork.mainnet, locale: locale), viewHostProvider: viewHostProvider)
+    public convenience init(apiKey: String, locale: String = Locale.current.identifier) {
+        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: EthNetwork.mainnet, locale: locale))
+    }
+
+    public convenience init(apiKey: String, locale: String = Locale.current.identifier, viewHostProvider: MagicViewHostProviding) {
+        self.init(urlBuilder: URLBuilder(apiKey: apiKey, locale: locale), viewHostProvider: viewHostProvider)
     }
 
     /// Core constructor
-    private init(urlBuilder: URLBuilder, viewHostProvider: MagicViewHostProviding?) {
-        let viewHostProvider = viewHostProvider ?? MagicViewHostProvider()
+    private init(urlBuilder: URLBuilder, viewHostProvider: MagicViewHostProviding = MagicViewHostProvider()) {
         self.rpcProvider = RpcProvider(urlBuilder: urlBuilder, viewHostProvider: viewHostProvider)
 
         self.user = UserModule(rpcProvider: self.rpcProvider)

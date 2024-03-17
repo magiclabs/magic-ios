@@ -11,7 +11,7 @@ import UIKit
 
 public protocol WebViewControllerPresenting {
     func show() throws
-    func hide() throws
+    func hide(remove: Bool) throws
 }
 
 /// An instance of the Fortmatc Phantom WebView
@@ -284,17 +284,19 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
 extension WebViewController: WebViewControllerPresenting {
     func show() throws {
         let isAlreadyAttached = try isAttached()
-        let container = try viewHostProvider.provide()
-        
         if !isAlreadyAttached {
             try attachWebView()
         }
 
-        container.view.bringSubviewToFront(view)
+        try bringToFront()
     }
 
-    func hide() throws {
-        try detachWebView()
+    func hide(remove: Bool = false) throws {
+        if remove {
+            try detachWebView()
+        } else {
+            try sendToBack()
+        }
     }
 }
 
@@ -318,7 +320,16 @@ private extension WebViewController {
 
     func detachWebView() throws {
         guard try isAttached() else { return }
-        view.superview?.sendSubviewToBack(view)
+        try sendToBack()
         view.removeFromSuperview()
+    }
+
+    func bringToFront() throws {
+        view.superview?.bringSubviewToFront(view)
+    }
+
+    func sendToBack() throws {
+        guard try isAttached() else { return }
+        view.superview?.sendSubviewToBack(view)
     }
 }

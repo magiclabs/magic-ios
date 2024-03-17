@@ -53,7 +53,7 @@ public class AuthModule: BaseModule {
         }
     }
 
-    public func cancelLogin() {
+    public func cancelLogin(remove: Bool = false) {
         if #available(iOS 14.0, *) {
             AuthModule.logger.warning("cancelLogin: \(BaseWarningLog.MA_Method)")
         } else {
@@ -61,7 +61,7 @@ public class AuthModule: BaseModule {
         }
 
         do {
-            try self.provider.webViewPresenter.hide()
+            try self.provider.webViewPresenter.hide(remove: remove)
         } catch let error {
             debugPrint("Failed to dismiss login view due to \(error.localizedDescription)")
         }
