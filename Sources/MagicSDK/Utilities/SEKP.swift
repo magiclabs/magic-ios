@@ -69,6 +69,17 @@ func retrieveKeyFromKeyChain () throws -> SecureEnclave.P256.Signing.PrivateKey 
     }
 }
 
+func deleteKeyFromKeyChain() throws {
+    let query = [kSecClass: kSecClassGenericPassword,
+                 kSecAttrAccount: account,
+                 kSecUseDataProtectionKeychain: true] as [String: Any]
+
+    let status = SecItemDelete(query as CFDictionary)
+    guard status == errSecSuccess || status == errSecItemNotFound else {
+        throw SEKPError.KeyStoreError("Unable to delete item: \(status.description)")
+    }
+}
+
 
 protocol GenericPasswordConvertible: CustomStringConvertible {
     /// Creates a key from a raw representation.
