@@ -365,6 +365,15 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
             throw AuthRelayerError.webviewAttachedFailed
         }
     }
+    
+    func detachWebViewFromCustomView() throws {
+        if customViewWrapper != nil {
+            webView.removeFromSuperview()
+        } else {
+            print("Please make sure you have provided Magic with a custom UIViewController to use this method.")
+            throw AuthRelayerError.customViewNotFound
+        }
+    }
 }
 
 

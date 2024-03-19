@@ -35,6 +35,15 @@ public class AuthModule: BaseModule {
         }
     }
     
+    // MARK: - External Dismiss WebView
+    public func externalDismissLoginView() {
+        do {
+            try self.provider.overlay.detachWebViewFromCustomView()
+        } catch let error {
+            debugPrint("Failed to dismiss login view due to \(error.localizedDescription)")
+        }
+    }
+    
     public enum LoginEmailOTPLinkEvent: String {
         case emailNotDeliverable = "email-not-deliverable"
         case emailSent = "email-sent"
