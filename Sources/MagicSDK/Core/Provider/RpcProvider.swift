@@ -76,7 +76,7 @@ public class RpcProvider: NetworkClient, Web3Provider {
         }.catch { error in
             let errResponse = Web3Response<Result>(error: ProviderError.encodingFailed(error))
             response(errResponse)
-//            handleRollbarError(error, log: false)
+
         }
     }
 }
