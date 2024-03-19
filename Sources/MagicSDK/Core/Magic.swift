@@ -33,6 +33,7 @@ public class Magic: NSObject {
     ///   - apiKey: Your client ID. From https://dashboard.Magic.com
     ///   - ethNetwork: Etherum Network setting (ie. mainnet or goerli)
     ///   - customNode: A custom RPC node 
+    ///   - customViewWrapper: An  custom `UIViewController` to act as the wrapping container of Magic's WebView
     public convenience init(apiKey: String, ethNetwork: EthNetwork, locale: String = Locale.current.identifier) {
         self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: ethNetwork, locale: locale))
     }
@@ -40,14 +41,18 @@ public class Magic: NSObject {
     public convenience init(apiKey: String, customNode: CustomNodeConfiguration, locale: String = Locale.current.identifier) {
         self.init(urlBuilder: URLBuilder(apiKey: apiKey, customNode: customNode, locale: locale))
     }
+    
+    public convenience init(apiKey: String, customViewWrapper: UIViewController, locale: String = Locale.current.identifier) {
+        self.init(urlBuilder: URLBuilder(apiKey: apiKey, locale: locale), customViewWrapper: customViewWrapper)
+    }
 
     public convenience init(apiKey: String, locale: String = Locale.current.identifier) {
         self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: EthNetwork.mainnet, locale: locale))
     }
 
     /// Core constructor
-    private init(urlBuilder: URLBuilder) {
-         self.rpcProvider = RpcProvider(urlBuilder: urlBuilder)
+    private init(urlBuilder: URLBuilder, customViewWrapper: UIViewController? = nil) {
+        self.rpcProvider = RpcProvider(urlBuilder: urlBuilder, customViewWrapper: customViewWrapper)
         
          self.user = UserModule(rpcProvider: self.rpcProvider)
          self.auth = AuthModule(rpcProvider: self.rpcProvider)
