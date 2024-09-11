@@ -20,4 +20,5 @@ internal enum UserMethod: String, CaseIterable {
     case magic_auth_is_logged_in
     case magic_auth_update_phone_number
     case magic_auth_recover_account
+    case magic_reveal_key
 }

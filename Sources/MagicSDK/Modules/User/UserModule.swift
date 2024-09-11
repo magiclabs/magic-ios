@@ -145,4 +145,18 @@ public class UserModule: BaseModule {
             recoverAccount(configuration, response: promiseResolver(resolver))
         }
     }
+
+    /**
+        revealPrivateKey
+     */
+     public func revealPrivateKey(response: @escaping Web3ResponseCompletion<Bool>) {
+        let request = BasicRPCRequest(method: UserMethod.magic_reveal_key.rawValue, params: [])
+        self.provider.send(request: request, response: response)
+     }
+
+     public func revealPrivateKey() -> Promise<Bool> {
+        return Promise { resolver in
+            revealPrivateKey(response: promiseResolver(resolver))
+        }
+     }
 }
