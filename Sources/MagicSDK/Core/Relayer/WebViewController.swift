@@ -25,6 +25,7 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
         case messageEncodeFailed(message: String)
 
         case webviewAttachedFailed
+        case customViewNotFound
         case topMostWindowNotFound
     }
 
@@ -43,12 +44,16 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
     /// Queue and callbackss
     var queue: [String] = []
     var messageHandlers: Dictionary<Int, MessageHandler> = [:]
+    
+    var customViewWrapper: UIViewController?
 
     typealias MessageHandler = (String) throws ->  Void
 
     // MARK: - init
-    init(url: URLBuilder) {
+    init(url: URLBuilder, customViewWrapper: UIViewController? = nil) {
         self.urlBuilder = url
+        self.customViewWrapper = customViewWrapper
+        
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -241,6 +246,21 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
     override func viewDidLoad() {
         super.viewDidLoad()
         webView.scrollView.delegate = self // disable zoom
+        
+        if let customViewWrapper = customViewWrapper {
+            // Add webView as a subview of the custom wrapper's view
+            customViewWrapper.view.addSubview(webView)
+            loadWebViewContent()
+        } else {
+            loadWebViewContent()
+        }
+    }
+    
+    private func loadWebViewContent() {
+        if let url = URL(string: urlBuilder.url) {
+            let request = URLRequest(url: url)
+            webView.load(request)
+        }
     }
 
     /// Check did finished navigating, conforming WKNavigationDelegate
@@ -343,6 +363,15 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
 
         } else {
             throw AuthRelayerError.webviewAttachedFailed
+        }
+    }
+    
+    func detachWebViewFromCustomView() throws {
+        if customViewWrapper != nil {
+            webView.removeFromSuperview()
+        } else {
+            print("Please make sure you have provided Magic with a custom UIViewController to use this method.")
+            throw AuthRelayerError.customViewNotFound
         }
     }
 }
