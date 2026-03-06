@@ -36,12 +36,17 @@ func createP256KeyInSE () throws -> SecureEnclave.P256.Signing.PrivateKey {
 
 func storeKeyToKeyChain<T: GenericPasswordConvertible>(_ key: T) throws {
     // Treat the key data as a generic password.
+    // kSecAttrAccessibleWhenUnlockedThisDeviceOnly ensures the item:
+    //   • is NOT included in device backups (encrypted or otherwise)
+    //   • is NOT synced via iCloud Keychain
+    //   • is bound to this specific device, matching the non-exportable
+    //     guarantee of the Secure Enclave private key it references.
     let query = [kSecClass: kSecClassGenericPassword,
                  kSecAttrAccount: account,
-                 kSecAttrAccessible: kSecAttrAccessibleWhenUnlocked,
+                 kSecAttrAccessible: kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
+                 kSecAttrSynchronizable: kCFBooleanFalse!,
                  kSecUseDataProtectionKeychain: true,
                  kSecValueData: key.rawRepresentation] as [String: Any]
-
 
     // Add the key data.
     let status = SecItemAdd(query as CFDictionary, nil)
@@ -50,13 +55,13 @@ func storeKeyToKeyChain<T: GenericPasswordConvertible>(_ key: T) throws {
     }
 }
 
-func retrieveKeyFromKeyChain () throws -> SecureEnclave.P256.Signing.PrivateKey {
+func retrieveKeyFromKeyChain() throws -> SecureEnclave.P256.Signing.PrivateKey {
     // Seek a generic password with the given account.
     let query = [kSecClass: kSecClassGenericPassword,
                  kSecAttrAccount: account,
+                 kSecAttrSynchronizable: kCFBooleanFalse!,
                  kSecUseDataProtectionKeychain: true,
                  kSecReturnData: true] as [String: Any]
-
 
     // Find and cast the result as data.
     var item: CFTypeRef?
@@ -72,6 +77,7 @@ func retrieveKeyFromKeyChain () throws -> SecureEnclave.P256.Signing.PrivateKey 
 func deleteKeyFromKeyChain() throws {
     let query = [kSecClass: kSecClassGenericPassword,
                  kSecAttrAccount: account,
+                 kSecAttrSynchronizable: kCFBooleanFalse!,
                  kSecUseDataProtectionKeychain: true] as [String: Any]
 
     let status = SecItemDelete(query as CFDictionary)
