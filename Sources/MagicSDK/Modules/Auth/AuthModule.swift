@@ -24,17 +24,76 @@ public class AuthModule: BaseModule {
     }
     
     // MARK: - Login with EmailOTP
-    public func loginWithEmailOTP (_ configuration: LoginWithEmailOTPConfiguration, response: @escaping Web3ResponseCompletion<String> ) {
+    public func loginWithEmailOTP(_ configuration: LoginWithEmailOTPConfiguration, response: @escaping Web3ResponseCompletion<String>) {
         let request = RPCRequest<[LoginWithEmailOTPConfiguration]>(method: AuthMethod.magic_auth_login_with_email_otp.rawValue, params: [configuration])
         self.provider.send(request: request, response: response)
     }
-    
-    public func loginWithEmailOTP (_ configuration: LoginWithEmailOTPConfiguration) -> Promise<String> {
+
+    public func loginWithEmailOTP(_ configuration: LoginWithEmailOTPConfiguration) -> Promise<String> {
         return Promise { resolver in
             loginWithEmailOTP(configuration, response: promiseResolver(resolver))
         }
     }
-    
+
+    /// Event-driven overload for `showUI: false` flows. Returns a `MagicEventPromise`
+    /// that lets callers subscribe to inbound events and emit OTP back to the relayer.
+    ///
+    /// Example:
+    /// ```swift
+    /// magic.auth.loginWithEmailOTP(LoginWithEmailOTPConfiguration(email: email, showUI: false), eventLog: true)
+    ///     .on(eventName: LoginWithEmailOTPEvent.emailOTPSent.rawValue) {
+    ///         // prompt user for OTP
+    ///     }
+    ///     .on(eventName: LoginWithEmailOTPEvent.invalidEmailOTP.rawValue) {
+    ///         // show error
+    ///     }
+    ///     .done { didToken in
+    ///         // authenticated
+    ///     }
+    ///
+    /// // When user submits OTP:
+    /// handle.emit(eventType: LoginWithEmailOTPEvent.verifyEmailOTP.rawValue, arg: otp)
+    /// ```
+    @discardableResult
+    public func loginWithEmailOTP(_ configuration: LoginWithEmailOTPConfiguration, eventLog: Bool) -> MagicEventPromise<String> {
+        // Build the request once so its id is the same one sent to the relayer.
+        let request = RPCRequest<[LoginWithEmailOTPConfiguration]>(method: AuthMethod.magic_auth_login_with_email_otp.rawValue, params: [configuration])
+        let payloadId = request.id
+
+        return MagicEventPromise(eventCenter: magicEventCenter, eventLog: eventLog, emitHandler: { [weak self] eventType, arg in
+            self?.sendIntermediaryEvent(payloadId: payloadId, eventType: eventType, arg: arg)
+        }) { [weak self] resolver in
+            self?.provider.send(request: request, response: promiseResolver(resolver))
+        }
+    }
+
+    public enum LoginWithEmailOTPEvent: String {
+        // Inbound — received from relayer (email OTP)
+        case emailOTPSent            = "email-otp-sent"
+        case invalidEmailOTP         = "invalid-email-otp"
+        case expiredEmailOTP         = "expired-email-otp"
+        case loginThrottled          = "login-throttled"
+        case maxAttemptsReached      = "max-attempts-reached"
+        // Inbound — received from relayer (MFA)
+        case mfaSentHandle           = "mfa-sent-handle"
+        case invalidMfaOTP           = "invalid-mfa-otp"
+        case recoveryCodeSentHandle  = "recovery-code-sent-handle"
+        case invalidRecoveryCode     = "invalid-recovery-code"
+        case recoveryCodeSuccess     = "recovery-code-success"
+        // Inbound — received from relayer (device verification)
+        case deviceNeedsApproval           = "device-needs-approval"
+        case deviceVerificationEmailSent   = "device-verification-email-sent"
+        case deviceApproved                = "device-approved"
+        case deviceVerificationLinkExpired = "device-verification-link-expired"
+        // Outbound — emitted by SDK to relayer
+        case verifyEmailOTP          = "verify-email-otp"
+        case verifyMFACode           = "verify-mfa-code"
+        case verifyRecoveryCode      = "verify-recovery-code"
+        case lostDevice              = "lost-device"
+        case deviceRetry             = "device-retry"
+        case cancel                  = "cancel"
+    }
+
     public enum LoginEmailOTPLinkEvent: String {
         case emailNotDeliverable = "email-not-deliverable"
         case emailSent = "email-sent"

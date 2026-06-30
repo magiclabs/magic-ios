@@ -75,10 +75,11 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
     private func dequeue() throws -> Void {
 
         // Check if UI is appended properly to current screen before dequeue
-        guard let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first else { return try attachWebView() }
+        guard let window = try? getKeyWindow() else {
+            return try attachWebView()
+        }
 
         if self.view.isDescendant(of: window) {
-
             if !queue.isEmpty && overlayReady && webViewFinishLoading {
                 let message = queue.removeFirst()
                 try self.postMessage(message: message)
@@ -137,7 +138,9 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
         // post event to the observer
         let event = eventResponse.response
         if let eventName = event.result.event {
-            NotificationCenter.default.post(name: Notification.Name.init(eventName), object: nil, userInfo: ["event": event.result])
+            // Re-wrap as MagicEventResult<[AnyValue]> (non-optional params) so EventCenter cast succeeds
+            let result = MagicEventResult<[AnyValue]>(event: eventName, params: event.result.params ?? [], product_announcement: event.result.product_announcement)
+            NotificationCenter.default.post(name: Notification.Name.init(eventName), object: nil, userInfo: ["event": result])
         }
     }
 
@@ -208,7 +211,9 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
         }
 
         let execString = String(format: "window.dispatchEvent(new MessageEvent('message', \(jsonString)));")
-        webView.evaluateJavaScript(execString)
+        webView.evaluateJavaScript(execString) { _, err in
+            if let err = err { print("Magic internal error evaluateJavaScript: \(err)") }
+        }
     }
 
 
@@ -339,12 +344,24 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
     }
 
     private func getKeyWindow() throws -> UIWindow {
-
-        guard let keyWindow = UIApplication.shared.windows.filter({$0.isKeyWindow}).first else {
-            throw AuthRelayerError.topMostWindowNotFound
+        if #available(iOS 15.0, *) {
+            // Prefer foregroundActive, fall back to foregroundInactive (e.g. during launch)
+            let windowScene = UIApplication.shared.connectedScenes
+                .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
+                ?? UIApplication.shared.connectedScenes
+                    .first(where: { $0.activationState == .foregroundInactive }) as? UIWindowScene
+                ?? UIApplication.shared.connectedScenes.first as? UIWindowScene
+            guard let scene = windowScene,
+                  let window = scene.windows.first(where: { $0.isKeyWindow }) ?? scene.windows.first
+            else { throw AuthRelayerError.topMostWindowNotFound }
+            return window
+        } else {
+            guard let keyWindow = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
+                                  ?? UIApplication.shared.windows.first else {
+                throw AuthRelayerError.topMostWindowNotFound
+            }
+            return keyWindow
         }
-
-        return keyWindow
     }
 
     private func attachWebView() throws -> Void {

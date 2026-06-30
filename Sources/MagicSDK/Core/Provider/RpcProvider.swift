@@ -58,9 +58,6 @@ public class RpcProvider: NetworkClient, Web3Provider {
     public func send<Params, Result>(request: RPCRequest<Params>, response: @escaping Web3ResponseCompletion<Result>) {
         let msgType = OutboundMessageType.MAGIC_HANDLE_REQUEST
 
-        // Re-assign ID to the payload
-        let newRequest = RPCRequest(method: request.method, params: request.params)
-
         // Retrieve persisted refresh token and DPoP JWT
         let rt = getRefreshToken()
         let jwt = createJwt()
@@ -68,7 +65,7 @@ public class RpcProvider: NetworkClient, Web3Provider {
         // construct message data
         let eventMessage = MagicRequestData(
             msgType: "\(msgType.rawValue)-\(urlBuilder.encodedParams)",
-            payload: newRequest,
+            payload: request,
             rt: (jwt != nil) ? rt : nil,  // only send rt when jwt is available (matches magic-js behavior)
             jwt: jwt
         )
@@ -81,7 +78,7 @@ public class RpcProvider: NetworkClient, Web3Provider {
             let str = try String(body)
 
             // enqueue and send to webview
-            try self.overlay.enqueue(message: str, id: newRequest.id) { ( responseString: String) in
+            try self.overlay.enqueue(message: str, id: request.id) { ( responseString: String) in
                 guard let jsonData = responseString.data(using: .utf8) else {
                     throw ProviderError.invalidJsonResponse(json: str)
                 }

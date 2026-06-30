@@ -42,8 +42,10 @@ public class UpdateEmailConfiguration: BaseConfiguration {
 
 public class RecoverAccountConfiguration: BaseConfiguration {
     var email: String
-    
-    public init(email: String){
+    var showUI: Bool
+
+    public init(email: String, showUI: Bool = true) {
         self.email = email
+        self.showUI = showUI
     }
 }
