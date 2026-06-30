@@ -8,7 +8,7 @@ As of `v9.0.0`, passcodes (ie. `loginWithSMS()`, `loginWithEmailOTP()`) are repl
 Add the package in Xcode via **File → Add Package Dependencies** and enter:
 
 ```
-https://github.com/magiclabs/magic-ios
+https://github.com/magiclabs/magic-ios.git
 ```
 
 Or add it to your `Package.swift`:
