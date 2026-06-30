@@ -147,20 +147,6 @@ public class UserModule: BaseModule {
     }
 
     /**
-        revealEVMPrivateKey
-     */
-    public func revealEVMPrivateKey(response: @escaping Web3ResponseCompletion<Bool>) {
-        let request = RPCRequest<[[String: String]]>(method: UserMethod.magic_reveal_key.rawValue, params: [["chain": "ETH"]])
-        self.provider.send(request: request, response: response)
-    }
-
-    public func revealEVMPrivateKey() -> Promise<Bool> {
-        return Promise { resolver in
-            revealEVMPrivateKey(response: promiseResolver(resolver))
-        }
-    }
-
-    /**
         enableMFA
      */
     public func enableMFA(response: @escaping Web3ResponseCompletion<Bool>) {
