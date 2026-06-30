@@ -41,10 +41,10 @@ public class AuthModule: BaseModule {
     /// Example:
     /// ```swift
     /// magic.auth.loginWithEmailOTP(LoginWithEmailOTPConfiguration(email: email, showUI: false), eventLog: true)
-    ///     .on(eventName: LoginWithEmailOTPEvent.emailOTPSent.rawValue) {
+    ///     .on(eventName: LoginWithEmailOTPEventOnReceived.emailOTPSent.rawValue) {
     ///         // prompt user for OTP
     ///     }
-    ///     .on(eventName: LoginWithEmailOTPEvent.invalidEmailOTP.rawValue) {
+    ///     .on(eventName: LoginWithEmailOTPEventOnReceived.invalidEmailOTP.rawValue) {
     ///         // show error
     ///     }
     ///     .done { didToken in
@@ -52,7 +52,7 @@ public class AuthModule: BaseModule {
     ///     }
     ///
     /// // When user submits OTP:
-    /// handle.emit(eventType: LoginWithEmailOTPEvent.verifyEmailOTP.rawValue, arg: otp)
+    /// handle.emit(eventType: LoginWithEmailOTPEventEmit.verifyEmailOTP.rawValue, arg: otp)
     /// ```
     @discardableResult
     public func loginWithEmailOTP(_ configuration: LoginWithEmailOTPConfiguration, eventLog: Bool) -> MagicEventPromise<String> {
@@ -67,36 +67,48 @@ public class AuthModule: BaseModule {
         }
     }
 
-    public enum LoginWithEmailOTPEvent: String {
-        // Inbound — received from relayer (email OTP)
-        case emailOTPSent            = "email-otp-sent"
-        case invalidEmailOTP         = "invalid-email-otp"
-        case expiredEmailOTP         = "expired-email-otp"
-        case loginThrottled          = "login-throttled"
-        case maxAttemptsReached      = "max-attempts-reached"
-        // Inbound — received from relayer (MFA)
-        case mfaSentHandle           = "mfa-sent-handle"
-        case invalidMfaOTP           = "invalid-mfa-otp"
-        case recoveryCodeSentHandle  = "recovery-code-sent-handle"
-        case invalidRecoveryCode     = "invalid-recovery-code"
-        case recoveryCodeSuccess     = "recovery-code-success"
-        // Inbound — received from relayer (device verification)
+    public enum LoginWithEmailOTPEventOnReceived: String {
+        case emailOTPSent       = "email-otp-sent"
+        case invalidEmailOTP    = "invalid-email-otp"
+        case expiredEmailOTP    = "expired-email-otp"
+        case loginThrottled     = "login-throttled"
+        case maxAttemptsReached = "max-attempts-reached"
+    }
+
+    public enum LoginWithEmailOTPEventEmit: String {
+        case verifyEmailOTP = "verify-email-otp"
+        case cancel         = "cancel"
+    }
+
+    public enum MFAEventOnReceived: String {
+        case mfaSentHandle          = "mfa-sent-handle"
+        case invalidMfaOTP          = "invalid-mfa-otp"
+        case recoveryCodeSentHandle = "recovery-code-sent-handle"
+        case invalidRecoveryCode    = "invalid-recovery-code"
+        case recoveryCodeSuccess    = "recovery-code-success"
+    }
+
+    public enum MFAEventEmit: String {
+        case verifyMFACode      = "verify-mfa-code"
+        case verifyRecoveryCode = "verify-recovery-code"
+        case lostDevice         = "lost-device"
+        case cancel             = "cancel"
+    }
+
+    public enum DeviceVerificationEventOnReceived: String {
         case deviceNeedsApproval           = "device-needs-approval"
         case deviceVerificationEmailSent   = "device-verification-email-sent"
         case deviceApproved                = "device-approved"
         case deviceVerificationLinkExpired = "device-verification-link-expired"
-        // Outbound — emitted by SDK to relayer
-        case verifyEmailOTP          = "verify-email-otp"
-        case verifyMFACode           = "verify-mfa-code"
-        case verifyRecoveryCode      = "verify-recovery-code"
-        case lostDevice              = "lost-device"
-        case deviceRetry             = "device-retry"
-        case cancel                  = "cancel"
+    }
+
+    public enum DeviceVerificationEventEmit: String {
+        case deviceRetry = "device-retry"
     }
 
     public enum LoginEmailOTPLinkEvent: String {
         case emailNotDeliverable = "email-not-deliverable"
-        case emailSent = "email-sent"
-        case retry = "retry"
+        case emailSent           = "email-sent"
+        case retry               = "retry"
     }
 }
