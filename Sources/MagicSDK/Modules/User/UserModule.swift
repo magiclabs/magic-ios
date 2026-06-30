@@ -85,11 +85,17 @@ public class UserModule: BaseModule {
     }
     
     public func updateEmail(_ configuration: UpdateEmailConfiguration, eventLog: Bool) -> MagicEventPromise<Bool> {
-        return MagicEventPromise (eventCenter: self.magicEventCenter, eventLog: eventLog){ resolver in
+        return MagicEventPromise(eventCenter: self.magicEventCenter, eventLog: eventLog) { resolver in
             self.updateEmail(configuration, response: promiseResolver(resolver))
         }
     }
-    
+
+    public enum UpdateEmailEvent: String {
+        case emailSent           = "email-sent"
+        case emailNotDeliverable = "email-not-deliverable"
+        case retry               = "retry"
+    }
+
     /**
             Logout
      */
