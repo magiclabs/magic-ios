@@ -11,38 +11,9 @@ The Magic CocoaPods SDK version (v8.0.0) is currently out of sync with the Magic
 ## ⚠️ Removal of `loginWithMagicLink()`  ⚠️
 As of `v9.0.0`, passcodes (ie. `loginWithSMS()`, `loginWithEmailOTP()`) are replacing Magic Links (ie. `loginWithMagicLink()`) for all of our Mobile SDKs⁠. [Learn more](https://magic.link/docs/auth/login-methods/email/email-link-update-march-2023)
 
-## Cocoapods
+## Example
 
-### Set up the local development env
-1. To start the demo app with local development SDK, download following projects
-```bash
-# demo app
-$ git clone https://github.com/magiclabs/magic-ios-demo
-# ios SDK
-$ git clone https://github.com/magiclabs/magic-ios
-```
-
-2. To enable the demo use the local development SDK. Navigate to `magic-ios-demo/Podfile` and edit the following lines.
-This will make pod file install local dependencies instead of the ones distributed.
-
-```ruby 
-# Distributed Library on Cocoapods
-# pod 'MagicSDK', '~> 4.0'
-# pod 'MagicExt-OAuth', '~> 1.0'
-    
-#   Local development library
-pod 'MagicSDK', :path => '../magic-ios/MagicSDK.podspec'
-pod 'MagicExt-OAuth', :path => '../magic-ios-ext/MagicExt-OAuth.podspec'
-```
-
-```bash
-$ cd /YOUR/PATH/TO/magic-ios-demo
-
-# Install dependencies
-$ pod install
-```
-
-3. Open `/YOUR/PATH/TO/magic-ios-demo/magic-ios-demo.xcworkspace` with XCode and try it out!
+A SwiftUI demo app is included in `Example/MagicDemo`. Add the MagicSDK package to your app (Swift Package Manager) and copy the example source files into your target. Set your publishable API key in `MagicDemoApp.swift`.
 
 ---
 

@@ -59,7 +59,7 @@ public class UserModule: BaseModule {
                 IsLogged In
      */
     public func isLoggedIn(response: @escaping Web3ResponseCompletion<Bool>) {
-        let request = BasicRPCRequest(method: UserMethod.magic_auth_is_logged_in.rawValue, params: [])
+        let request = BasicRPCRequest(method: UserMethod.magic_is_logged_in.rawValue, params: [])
         self.provider.send(request: request, response: response)
     }
     
@@ -93,12 +93,15 @@ public class UserModule: BaseModule {
     /**
             Logout
      */
-    public func logout (response: @escaping Web3ResponseCompletion<Bool>) {
+    public func logout(response: @escaping Web3ResponseCompletion<Bool>) {
         let request = BasicRPCRequest(method: UserMethod.magic_auth_logout.rawValue, params: [])
-        self.provider.send(request: request, response: response)
+        self.provider.send(request: request) { [weak self] (result: Web3Response<Bool>) in
+            self?.provider.clearRefreshToken()
+            response(result)
+        }
     }
-    
-    public func logout() -> Promise<Bool>  {
+
+    public func logout() -> Promise<Bool> {
         return Promise { resolver in
             logout(response: promiseResolver(resolver))
         }
@@ -136,13 +139,41 @@ public class UserModule: BaseModule {
      */
     public func recoverAccount(_ configuration: RecoverAccountConfiguration, response: @escaping Web3ResponseCompletion<Bool>) {
         let request = RPCRequest<[RecoverAccountConfiguration]>(method: UserMethod.magic_auth_recover_account.rawValue, params: [configuration])
-        
+
         return self.provider.send(request: request, response: response)
     }
-    
+
     public func recoverAccount(_ configuration: RecoverAccountConfiguration) -> Promise<Bool> {
         return Promise { resolver in
             recoverAccount(configuration, response: promiseResolver(resolver))
+        }
+    }
+
+    /**
+        enableMFA
+     */
+    public func enableMFA(response: @escaping Web3ResponseCompletion<Bool>) {
+        let request = BasicRPCRequest(method: UserMethod.magic_auth_enable_mfa_flow.rawValue, params: [])
+        self.provider.send(request: request, response: response)
+    }
+
+    public func enableMFA() -> Promise<Bool> {
+        return Promise { resolver in
+            enableMFA(response: promiseResolver(resolver))
+        }
+    }
+
+    /**
+        disableMFA
+     */
+    public func disableMFA(response: @escaping Web3ResponseCompletion<Bool>) {
+        let request = BasicRPCRequest(method: UserMethod.magic_auth_disable_mfa_flow.rawValue, params: [])
+        self.provider.send(request: request, response: response)
+    }
+
+    public func disableMFA() -> Promise<Bool> {
+        return Promise { resolver in
+            disableMFA(response: promiseResolver(resolver))
         }
     }
 }

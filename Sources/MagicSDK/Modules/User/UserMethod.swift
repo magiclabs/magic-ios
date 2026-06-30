@@ -17,7 +17,10 @@ internal enum UserMethod: String, CaseIterable {
     case magic_auth_logout
     case magic_auth_settings
     case magic_auth_update_email
-    case magic_auth_is_logged_in
+    case magic_is_logged_in
     case magic_auth_update_phone_number
     case magic_auth_recover_account
+    case magic_auth_enable_mfa_flow
+    case magic_auth_disable_mfa_flow
+    case magic_auth_get_metadata
 }

@@ -25,8 +25,9 @@ public struct RequestUserInfoWithUIConfiguration: BaseConfiguration {
 
 public struct WalletUserInfoScope: Codable {
     var email: WalletUserInfoEmailOptions
-    
+
     enum CodingKeys: String, CodingKey {
         case email
     }
 }
+

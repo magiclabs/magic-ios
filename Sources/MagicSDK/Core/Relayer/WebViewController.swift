@@ -17,7 +17,7 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
         subsystem: Bundle.main.bundleIdentifier!,
         category: String(describing: WebViewController.self)
     )
-    
+
     /// Various errors that may occur while processing Web3 requests
     public enum AuthRelayerError: Error {
 
@@ -40,11 +40,19 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
     var overlayReady = false
     var webViewFinishLoading = false
 
-    /// Queue and callbackss
+    /// Queue and callbacks
     var queue: [String] = []
     var messageHandlers: Dictionary<Int, MessageHandler> = [:]
 
     typealias MessageHandler = (String) throws ->  Void
+
+    // MARK: - Heartbeat
+    private let pingInterval: TimeInterval = 5 * 60      // 5 minutes
+    private let heartbeatInitialDelay: TimeInterval = 60 * 60  // 1 hour
+
+    private var lastPongTime: Date?
+    private var heartbeatTimer: Timer?
+    private var heartbeatDebounceWorkItem: DispatchWorkItem?
 
     // MARK: - init
     init(url: URLBuilder) {
@@ -66,11 +74,12 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
 
     private func dequeue() throws -> Void {
 
-        // Check if UI is appeneded properly to current screen before dequeue
-        guard let window = UIApplication.shared.keyWindow else { return try attachWebView() }
+        // Check if UI is appended properly to current screen before dequeue
+        guard let window = try? getKeyWindow() else {
+            return try attachWebView()
+        }
 
         if self.view.isDescendant(of: window) {
-
             if !queue.isEmpty && overlayReady && webViewFinishLoading {
                 let message = queue.removeFirst()
                 try self.postMessage(message: message)
@@ -96,17 +105,22 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
 
                 if payloadStr.contains(InboundMessageType.MAGIC_OVERLAY_READY.rawValue) {
                     overlayReady = true
+                    resetHeartbeatDebounce()
                     try? self.dequeue()
                 } else if payloadStr.contains(InboundMessageType.MAGIC_SHOW_OVERLAY.rawValue) {
                     try bringWebViewToFront()
                 } else if payloadStr.contains(InboundMessageType.MAGIC_HIDE_OVERLAY.rawValue) {
                     try sendSubviewToBack()
                 } else if payloadStr.contains(InboundMessageType.MAGIC_HANDLE_EVENT.rawValue) {
+                    resetHeartbeatDebounce()
                     try handleEvent(payloadStr: payloadStr)
                 } else if payloadStr.contains(InboundMessageType.MAGIC_HANDLE_RESPONSE.rawValue) {
+                    resetHeartbeatDebounce()
                     try handleResponse(payloadStr: payloadStr)
                 } else if payloadStr.contains(InboundMessageType.MAGIC_SEND_PRODUCT_ANNOUNCEMENT.rawValue) {
                     try makeProductAnnouncement(payloadStr: payloadStr)
+                } else if payloadStr.contains(InboundMessageType.MAGIC_PONG.rawValue) {
+                    lastPongTime = Date()
                 }
             }
             try self.dequeue()
@@ -121,42 +135,52 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
         let eventData = payloadStr.data(using: .utf8)!
         let eventResponse = try JSONDecoder().decode(MagicResponseData<MagicEventResponse<[AnyValue]>>.self, from: eventData)
 
-        // post event to the obeserver
+        // post event to the observer
         let event = eventResponse.response
         if let eventName = event.result.event {
-            NotificationCenter.default.post(name: Notification.Name.init(eventName), object: nil, userInfo: ["event": event.result])
+            // Re-wrap as MagicEventResult<[AnyValue]> (non-optional params) so EventCenter cast succeeds
+            let result = MagicEventResult<[AnyValue]>(event: eventName, params: event.result.params ?? [], product_announcement: event.result.product_announcement)
+            NotificationCenter.default.post(name: Notification.Name.init(eventName), object: nil, userInfo: ["event": result])
         }
     }
 
     private func handleResponse(payloadStr: String) throws -> Void {
 
-        /// Take id out from JSON string
-        if let range = payloadStr.range(of: "(?<=\"id\":)(.*?)(?=,)", options: .regularExpression) {
+        /// Use JSON parsing to robustly extract the numeric id field
+        guard let data = payloadStr.data(using: .utf8),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let response = json["response"] as? [String: Any],
+              let id = response["id"] as? Int else {
 
-            guard let id = Int(payloadStr[range]) else {
-
-                /// throws when response has no matching id
-                throw RpcProvider.ProviderError.invalidJsonResponse(json: payloadStr)
+            /// Fallback regex for non-standard formats
+            if let range = payloadStr.range(of: #"(?<="id":)\s*(\d+)"#, options: .regularExpression) {
+                guard let id = Int(payloadStr[range].trimmingCharacters(in: .whitespaces)) else {
+                    throw RpcProvider.ProviderError.invalidJsonResponse(json: payloadStr)
+                }
+                if let callback = self.messageHandlers[id] {
+                    try callback(payloadStr)
+                    self.messageHandlers[id] = nil
+                } else {
+                    throw RpcProvider.ProviderError.missingPayloadCallback(json: payloadStr)
+                }
+                return
             }
-
-            // Call callback stored
-            if let callback = self.messageHandlers[id] {
-                try callback(payloadStr)
-                self.messageHandlers[id] = nil
-            } else {
-
-                /// throws when response couldn't match a callback
-                throw RpcProvider.ProviderError.missingPayloadCallback(json: payloadStr)
-            }
-        } else {
             throw RpcProvider.ProviderError.invalidJsonResponse(json: payloadStr)
         }
+
+        // Call callback stored
+        if let callback = self.messageHandlers[id] {
+            try callback(payloadStr)
+            self.messageHandlers[id] = nil
+        } else {
+            throw RpcProvider.ProviderError.missingPayloadCallback(json: payloadStr)
+        }
     }
-    
+
     private func makeProductAnnouncement(payloadStr: String) throws {
         // Decoding the JSON string into the Payload struct
         guard let data = payloadStr.data(using: .utf8) else { return }
-        
+
         // Define a typealias for the expected payload type
         typealias PayloadType = MagicResponseData<MagicEventResponse<ProductAnnouncement>>
 
@@ -187,7 +211,9 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
         }
 
         let execString = String(format: "window.dispatchEvent(new MessageEvent('message', \(jsonString)));")
-        webView.evaluateJavaScript(execString)
+        webView.evaluateJavaScript(execString) { _, err in
+            if let err = err { print("Magic internal error evaluateJavaScript: \(err)") }
+        }
     }
 
 
@@ -318,12 +344,24 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
     }
 
     private func getKeyWindow() throws -> UIWindow {
-
-        guard let keyWindow = UIApplication.shared.windows.filter({$0.isKeyWindow}).first else {
-            throw AuthRelayerError.topMostWindowNotFound
+        if #available(iOS 15.0, *) {
+            // Prefer foregroundActive, fall back to foregroundInactive (e.g. during launch)
+            let windowScene = UIApplication.shared.connectedScenes
+                .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
+                ?? UIApplication.shared.connectedScenes
+                    .first(where: { $0.activationState == .foregroundInactive }) as? UIWindowScene
+                ?? UIApplication.shared.connectedScenes.first as? UIWindowScene
+            guard let scene = windowScene,
+                  let window = scene.windows.first(where: { $0.isKeyWindow }) ?? scene.windows.first
+            else { throw AuthRelayerError.topMostWindowNotFound }
+            return window
+        } else {
+            guard let keyWindow = UIApplication.shared.windows.first(where: { $0.isKeyWindow })
+                                  ?? UIApplication.shared.windows.first else {
+                throw AuthRelayerError.topMostWindowNotFound
+            }
+            return keyWindow
         }
-
-        return keyWindow
     }
 
     private func attachWebView() throws -> Void {
@@ -332,17 +370,75 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
 
         keyWindow.addSubview(self.view)
         keyWindow.sendSubviewToBack(self.view)
+    }
 
-        // find topmost view controller from the hierarchy and move webview to it
-        if var topController = keyWindow.rootViewController {
-            while let presentedViewController = topController.presentedViewController {
-                topController = presentedViewController
+    // MARK: - Heartbeat
+
+    /// Resets the debounced heartbeat timer. Called whenever the relayer sends any message,
+    /// ensuring the health check only starts after a period of relayer inactivity.
+    private func resetHeartbeatDebounce() {
+        heartbeatDebounceWorkItem?.cancel()
+        stopHeartbeatTimer()
+        lastPongTime = nil
+
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.startHeartbeat()
+        }
+        heartbeatDebounceWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + heartbeatInitialDelay, execute: workItem)
+    }
+
+    /// Begins periodic ping checks after the initial quiet period expires.
+    /// Reloads the webview if the relayer becomes unresponsive.
+    private func startHeartbeat() {
+        stopHeartbeatTimer()
+        var firstPing = true
+
+        heartbeatTimer = Timer.scheduledTimer(withTimeInterval: pingInterval, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+
+            if let lastPong = self.lastPongTime {
+                let timeSinceLastPong = Date().timeIntervalSince(lastPong)
+                if timeSinceLastPong > self.pingInterval * 2 {
+                    // Pong is stale — reload
+                    self.reloadWebView()
+                    firstPing = true
+                    return
+                }
+            } else if !firstPing {
+                // No pong ever received after first ping — reload
+                self.reloadWebView()
+                firstPing = true
+                return
             }
 
-            self.didMove(toParent: topController)
+            self.sendPing()
+            firstPing = false
+        }
+    }
 
-        } else {
-            throw AuthRelayerError.webviewAttachedFailed
+    private func stopHeartbeatTimer() {
+        heartbeatTimer?.invalidate()
+        heartbeatTimer = nil
+    }
+
+    private func sendPing() {
+        let msgType = "\(OutboundMessageType.MAGIC_PING.rawValue)-\(urlBuilder.encodedParams)"
+        let pingPayload: [String: Any] = ["msgType": msgType, "payload": []]
+        guard let data = try? JSONSerialization.data(withJSONObject: pingPayload),
+              let str = String(data: data, encoding: .utf8) else { return }
+        try? postMessage(message: str)
+    }
+
+    private func reloadWebView() {
+        overlayReady = false
+        webViewFinishLoading = false
+        stopHeartbeatTimer()
+        heartbeatDebounceWorkItem?.cancel()
+        let myURL = URL(string: urlBuilder.url)!
+        let myRequest = URLRequest(url: myURL)
+        DispatchQueue.main.async { [weak self] in
+            self?.webView.load(myRequest)
         }
     }
 }

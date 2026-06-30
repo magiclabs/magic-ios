@@ -9,10 +9,11 @@
 import MagicSDK_Web3
 import WebKit
 import PromiseKit
+import Security
 
 /// A custom Web3 HttpProvider that is specifically configured for use with Magic Links.
 public class RpcProvider: NetworkClient, Web3Provider {
-    
+
     /// Various errors that may occur while processing Web3 requests
     public enum ProviderError: Swift.Error {
         /// The provider is not configured with an authDelegate
@@ -24,49 +25,106 @@ public class RpcProvider: NetworkClient, Web3Provider {
         /// Missing callback
         case missingPayloadCallback(json: String)
     }
-    
+
     let overlay: WebViewController
     public let urlBuilder: URLBuilder
-    
+
+    /// Keychain service name for refresh token storage, namespaced by API key to avoid collisions.
+    private var rtKeychainService: String { "magic_rt_\(urlBuilder.apiKey)" }
+    private let rtKeychainAccount = "refresh_token"
+
     required init(urlBuilder: URLBuilder) {
         self.overlay = WebViewController(url: urlBuilder)
         self.urlBuilder = urlBuilder
         super.init()
     }
-    
+
+    // MARK: - Refresh Token
+
+    private func getRefreshToken() -> String? {
+        let query: [CFString: Any] = [
+            kSecClass:            kSecClassGenericPassword,
+            kSecAttrService:      rtKeychainService,
+            kSecAttrAccount:      rtKeychainAccount,
+            kSecReturnData:       true,
+            kSecMatchLimit:       kSecMatchLimitOne,
+        ]
+        var result: AnyObject?
+        guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
+              let data = result as? Data,
+              let rt = String(data: data, encoding: .utf8) else { return nil }
+        return rt
+    }
+
+    func clearRefreshToken() {
+        let query: [CFString: Any] = [
+            kSecClass:       kSecClassGenericPassword,
+            kSecAttrService: rtKeychainService,
+            kSecAttrAccount: rtKeychainAccount,
+        ]
+        SecItemDelete(query as CFDictionary)
+    }
+
+    private func persistRefreshToken(_ rt: String) {
+        guard let data = rt.data(using: .utf8) else { return }
+        let query: [CFString: Any] = [
+            kSecClass:                          kSecClassGenericPassword,
+            kSecAttrService:                    rtKeychainService,
+            kSecAttrAccount:                    rtKeychainAccount,
+            kSecAttrAccessible:                 kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly,
+            kSecAttrSynchronizable:             false,
+        ]
+        let attributes: [CFString: Any] = [kSecValueData: data]
+        if SecItemUpdate(query as CFDictionary, attributes as CFDictionary) == errSecItemNotFound {
+            SecItemAdd(query.merging(attributes) { $1 } as CFDictionary, nil)
+        }
+    }
+
     // MARK: - Sending Requests
-    
+
     /// Sends an RPCRequest and parses the result
-    /// Web3 Provider protocal conformed
+    /// Web3 Provider protocol conformed
     ///
     /// - Parameters:
     ///   - request: RPCRequest to send
     ///   - response: A completion handler for the response. Includes either the result or an error.
     public func send<Params, Result>(request: RPCRequest<Params>, response: @escaping Web3ResponseCompletion<Result>) {
         let msgType = OutboundMessageType.MAGIC_HANDLE_REQUEST
-        
-        // Re-assign ID to the payload
-        let newRequest = RPCRequest(method: request.method, params: request.params)
-        
+
+        // Retrieve persisted refresh token and DPoP JWT
+        let rt = getRefreshToken()
+        let jwt = createJwt()
+
         // construct message data
-        let eventMessage = MagicRequestData(msgType: "\(msgType.rawValue)-\(urlBuilder.encodedParams)", payload: newRequest, rt: nil, jwt: createJwt())
-        
+        let eventMessage = MagicRequestData(
+            msgType: "\(msgType.rawValue)-\(urlBuilder.encodedParams)",
+            payload: request,
+            rt: (jwt != nil) ? rt : nil,  // only send rt when jwt is available (matches magic-js behavior)
+            jwt: jwt
+        )
+
         // encode to JSON
         firstly {
             encode(body: eventMessage)
         }.done {body throws -> Void in
-            
+
             let str = try String(body)
-            
+
             // enqueue and send to webview
-            try self.overlay.enqueue(message: str, id: newRequest.id) { ( responseString: String) in
+            try self.overlay.enqueue(message: str, id: request.id) { ( responseString: String) in
                 guard let jsonData = responseString.data(using: .utf8) else {
                     throw ProviderError.invalidJsonResponse(json: str)
                 }
-                
+
                 // Decode JSON string into string
                 do {
-                let rpcResponse = try self.decoder.decode(MagicResponseData<RPCResponse<Result>>.self, from: jsonData)
+                    let rpcResponse = try self.decoder.decode(MagicResponseData<RPCResponse<Result>>.self, from: jsonData)
+
+                    // Persist refresh token if the relayer returned a new one
+                    if let newRt = rpcResponse.rt {
+                        self.persistRefreshToken(newRt)
+                    }
+
                     let result = Web3Response<Result>(rpcResponse: rpcResponse.response)
                     response(result)
                 } catch {
@@ -76,7 +134,6 @@ public class RpcProvider: NetworkClient, Web3Provider {
         }.catch { error in
             let errResponse = Web3Response<Result>(error: ProviderError.encodingFailed(error))
             response(errResponse)
-//            handleRollbarError(error, log: false)
         }
     }
 }
