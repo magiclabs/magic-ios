@@ -9,6 +9,7 @@
 import MagicSDK_Web3
 import WebKit
 import PromiseKit
+import Security
 
 /// A custom Web3 HttpProvider that is specifically configured for use with Magic Links.
 public class RpcProvider: NetworkClient, Web3Provider {
@@ -28,8 +29,9 @@ public class RpcProvider: NetworkClient, Web3Provider {
     let overlay: WebViewController
     public let urlBuilder: URLBuilder
 
-    /// UserDefaults key for persisting the refresh token
-    private let rtStorageKey = "magic_rt"
+    /// Keychain service name for refresh token storage, namespaced by API key to avoid collisions.
+    private var rtKeychainService: String { "magic_rt_\(urlBuilder.apiKey)" }
+    private let rtKeychainAccount = "refresh_token"
 
     required init(urlBuilder: URLBuilder) {
         self.overlay = WebViewController(url: urlBuilder)
@@ -40,11 +42,42 @@ public class RpcProvider: NetworkClient, Web3Provider {
     // MARK: - Refresh Token
 
     private func getRefreshToken() -> String? {
-        return UserDefaults.standard.string(forKey: rtStorageKey)
+        let query: [CFString: Any] = [
+            kSecClass:            kSecClassGenericPassword,
+            kSecAttrService:      rtKeychainService,
+            kSecAttrAccount:      rtKeychainAccount,
+            kSecReturnData:       true,
+            kSecMatchLimit:       kSecMatchLimitOne,
+        ]
+        var result: AnyObject?
+        guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
+              let data = result as? Data,
+              let rt = String(data: data, encoding: .utf8) else { return nil }
+        return rt
+    }
+
+    func clearRefreshToken() {
+        let query: [CFString: Any] = [
+            kSecClass:       kSecClassGenericPassword,
+            kSecAttrService: rtKeychainService,
+            kSecAttrAccount: rtKeychainAccount,
+        ]
+        SecItemDelete(query as CFDictionary)
     }
 
     private func persistRefreshToken(_ rt: String) {
-        UserDefaults.standard.set(rt, forKey: rtStorageKey)
+        guard let data = rt.data(using: .utf8) else { return }
+        let query: [CFString: Any] = [
+            kSecClass:                          kSecClassGenericPassword,
+            kSecAttrService:                    rtKeychainService,
+            kSecAttrAccount:                    rtKeychainAccount,
+            kSecAttrAccessible:                 kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly,
+            kSecAttrSynchronizable:             false,
+        ]
+        let attributes: [CFString: Any] = [kSecValueData: data]
+        if SecItemUpdate(query as CFDictionary, attributes as CFDictionary) == errSecItemNotFound {
+            SecItemAdd(query.merging(attributes) { $1 } as CFDictionary, nil)
+        }
     }
 
     // MARK: - Sending Requests

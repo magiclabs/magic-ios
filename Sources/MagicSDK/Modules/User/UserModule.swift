@@ -93,12 +93,15 @@ public class UserModule: BaseModule {
     /**
             Logout
      */
-    public func logout (response: @escaping Web3ResponseCompletion<Bool>) {
+    public func logout(response: @escaping Web3ResponseCompletion<Bool>) {
         let request = BasicRPCRequest(method: UserMethod.magic_auth_logout.rawValue, params: [])
-        self.provider.send(request: request, response: response)
+        self.provider.send(request: request) { [weak self] (result: Web3Response<Bool>) in
+            self?.provider.clearRefreshToken()
+            response(result)
+        }
     }
-    
-    public func logout() -> Promise<Bool>  {
+
+    public func logout() -> Promise<Bool> {
         return Promise { resolver in
             logout(response: promiseResolver(resolver))
         }
