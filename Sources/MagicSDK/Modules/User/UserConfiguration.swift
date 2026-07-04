@@ -49,3 +49,19 @@ public class RecoverAccountConfiguration: BaseConfiguration {
         self.showUI = showUI
     }
 }
+
+public class EnableMFAConfiguration: BaseConfiguration {
+    var showUI: Bool
+
+    public init(showUI: Bool = true) {
+        self.showUI = showUI
+    }
+}
+
+public class DisableMFAConfiguration: BaseConfiguration {
+    var showUI: Bool
+
+    public init(showUI: Bool = true) {
+        self.showUI = showUI
+    }
+}

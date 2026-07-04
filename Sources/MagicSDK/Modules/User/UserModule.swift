@@ -158,28 +158,51 @@ public class UserModule: BaseModule {
     /**
         enableMFA
      */
-    public func enableMFA(response: @escaping Web3ResponseCompletion<Bool>) {
-        let request = BasicRPCRequest(method: UserMethod.magic_auth_enable_mfa_flow.rawValue, params: [])
+    public func enableMFA(_ configuration: EnableMFAConfiguration = EnableMFAConfiguration(), response: @escaping Web3ResponseCompletion<Bool>) {
+        let request = RPCRequest<[EnableMFAConfiguration]>(method: UserMethod.magic_auth_enable_mfa_flow.rawValue, params: [configuration])
         self.provider.send(request: request, response: response)
     }
 
-    public func enableMFA() -> Promise<Bool> {
+    public func enableMFA(_ configuration: EnableMFAConfiguration = EnableMFAConfiguration()) -> Promise<Bool> {
         return Promise { resolver in
-            enableMFA(response: promiseResolver(resolver))
+            enableMFA(configuration, response: promiseResolver(resolver))
+        }
+    }
+
+    @discardableResult
+    public func enableMFA(_ configuration: EnableMFAConfiguration, eventLog: Bool) -> MagicEventPromise<Bool> {
+        let request = RPCRequest<[EnableMFAConfiguration]>(method: UserMethod.magic_auth_enable_mfa_flow.rawValue, params: [configuration])
+        let payloadId = request.id
+        return MagicEventPromise(eventCenter: magicEventCenter, eventLog: eventLog, emitHandler: { [weak self] eventType, arg in
+            self?.sendIntermediaryEvent(payloadId: payloadId, eventType: eventType, arg: arg)
+        }) { [weak self] resolver in
+            self?.provider.send(request: request, response: promiseResolver(resolver))
         }
     }
 
     /**
         disableMFA
      */
-    public func disableMFA(response: @escaping Web3ResponseCompletion<Bool>) {
-        let request = BasicRPCRequest(method: UserMethod.magic_auth_disable_mfa_flow.rawValue, params: [])
+    public func disableMFA(_ configuration: DisableMFAConfiguration = DisableMFAConfiguration(), response: @escaping Web3ResponseCompletion<Bool>) {
+        let request = RPCRequest<[DisableMFAConfiguration]>(method: UserMethod.magic_auth_disable_mfa_flow.rawValue, params: [configuration])
         self.provider.send(request: request, response: response)
     }
 
-    public func disableMFA() -> Promise<Bool> {
+    public func disableMFA(_ configuration: DisableMFAConfiguration = DisableMFAConfiguration()) -> Promise<Bool> {
         return Promise { resolver in
-            disableMFA(response: promiseResolver(resolver))
+            disableMFA(configuration, response: promiseResolver(resolver))
         }
     }
+
+    @discardableResult
+    public func disableMFA(_ configuration: DisableMFAConfiguration, eventLog: Bool) -> MagicEventPromise<Bool> {
+        let request = RPCRequest<[DisableMFAConfiguration]>(method: UserMethod.magic_auth_disable_mfa_flow.rawValue, params: [configuration])
+        let payloadId = request.id
+        return MagicEventPromise(eventCenter: magicEventCenter, eventLog: eventLog, emitHandler: { [weak self] eventType, arg in
+            self?.sendIntermediaryEvent(payloadId: payloadId, eventType: eventType, arg: arg)
+        }) { [weak self] resolver in
+            self?.provider.send(request: request, response: promiseResolver(resolver))
+        }
+    }
+
 }

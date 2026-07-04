@@ -111,4 +111,27 @@ public class AuthModule: BaseModule {
         case emailSent           = "email-sent"
         case retry               = "retry"
     }
+
+    public enum EnableMFAEventOnReceived: String {
+        case mfaSecretGenerated = "mfa-secret-generated"
+        case invalidMFAOTP      = "invalid-mfa-otp"
+        case mfaRecoveryCodes   = "mfa-recovery-codes"
+    }
+
+    public enum EnableMFAEventEmit: String {
+        case verifyMFACode = "verify-mfa-code"
+        case cancel        = "cancel-mfa-setup"
+    }
+
+    public enum DisableMFAEventOnReceived: String {
+        case mfaCodeRequested    = "mfa-code-requested"
+        case invalidMFAOTP       = "invalid-mfa-otp"
+        case invalidRecoveryCode = "invalid-recovery-code"
+    }
+
+    public enum DisableMFAEventEmit: String {
+        case verifyMFACode = "verify-mfa-code"
+        case lostDevice    = "lost-device"
+        case cancel        = "cancel-mfa-disable"
+    }
 }

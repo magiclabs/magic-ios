@@ -32,6 +32,16 @@ public class MagicEventPromise<T> {
         return self
     }
 
+    /// Subscribe to an inbound event whose first param is a dictionary (fires once).
+    /// Used for structured payloads like `mfa-secret-generated` which carries `{ QRCode, key }`.
+    @discardableResult
+    public func on(eventName: String, completion: @escaping ([String: AnyValue]?) -> Void) -> MagicEventPromise {
+        eventCenter.addOnceObserver(eventName: eventName, eventLog: eventLog) { params in
+            completion(params?.first?.dict)
+        }
+        return self
+    }
+
     /// Subscribe to an inbound event that may fire multiple times (e.g. invalid OTP retries).
     @discardableResult
     public func onPersistent(eventName: String, completion: @escaping () -> Void) -> MagicEventPromise {

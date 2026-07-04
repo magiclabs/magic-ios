@@ -29,6 +29,9 @@ public struct AnyValue: Codable {
         /// An array value
         case array([AnyValue])
 
+        /// A dictionary value (e.g. event payloads like mfa-secret-generated)
+        case dict([String: AnyValue])
+
         /// A special case nil value
         case `nil`
     }
@@ -48,6 +51,8 @@ public struct AnyValue: Codable {
             valueType = .int(int)
         } else if let array = try? container.decode([AnyValue].self) {
             valueType = .array(array)
+        } else if let dict = try? container.decode([String: AnyValue].self) {
+            valueType = .dict(dict)
         } else if container.decodeNil() {
             valueType = .nil
         } else {
@@ -74,6 +79,8 @@ public struct AnyValue: Codable {
             try container.encode(bool)
         case .array(let array):
             try container.encode(array)
+        case .dict(let dict):
+            try container.encode(dict)
         case .nil:
             try container.encodeNil()
         }
@@ -179,6 +186,14 @@ public extension AnyValue {
 
         return nil
     }
+
+    var dict: [String: AnyValue]? {
+        if case .dict(let dict) = valueType {
+            return dict
+        }
+
+        return nil
+    }
 }
 
 // MARK: - AnyValueConvertible
@@ -220,6 +235,11 @@ extension AnyValue.ValueType: Equatable {
                 return array == rArray
             }
             return false
+        case .dict(let dict):
+            if case .dict(let rDict) = rhs {
+                return dict == rDict
+            }
+            return false
         case .nil:
             if case .nil = rhs {
                 return true
@@ -250,6 +270,8 @@ extension AnyValue.ValueType: Hashable {
             hasher.combine(bool)
         case .array(let array):
             hasher.combine(array)
+        case .dict(let dict):
+            hasher.combine(dict)
         case .nil:
             hasher.combine(0x00)
         }
