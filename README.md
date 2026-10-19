@@ -1,7 +1,8 @@
 # MagicSDK
 
-## ⚠️ Removal of `loginWithMagicLink()`  ⚠️
-As of `v9.0.0`, passcodes (ie. `loginWithSMS()`, `loginWithEmailOTP()`) are replacing Magic Links (ie. `loginWithMagicLink()`) for all of our Mobile SDKs⁠. [Learn more](https://magic.link/docs/auth/login-methods/email/email-link-update-march-2023)
+The Magic SDK for iOS. It adds passwordless login and an embedded wallet to your app. See the [iOS SDK reference](https://docs.magic.link/embedded-wallets/sdk/client-side/ios) for the full guide.
+
+Requires iOS 13 or later.
 
 ## Swift Package Manager
 
@@ -15,7 +16,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/magiclabs/magic-ios.git", from: "10.2.0")
+    .package(url: "https://github.com/magiclabs/magic-ios.git", from: "10.3.0")
 ]
 ```
 
