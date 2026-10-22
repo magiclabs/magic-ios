@@ -22,6 +22,10 @@ public class Magic: NSObject {
     // MARK: - Property
    public var rpcProvider: RpcProvider
 
+    /// Extensions this instance was created with. Extension packages such as
+    /// `MagicExt-Solana` read this to tell whether they were enabled.
+    public let extensionConfigurations: [ExtensionConfiguration]
+
     /// Shared instance of `Magic`
     public static var shared: Magic!
 
@@ -33,20 +37,22 @@ public class Magic: NSObject {
     ///   - apiKey: Your client ID. From https://dashboard.Magic.com
     ///   - ethNetwork: Etherum Network setting (ie. mainnet or goerli)
     ///   - customNode: A custom RPC node 
-    public convenience init(apiKey: String, ethNetwork: EthNetwork, locale: String = Locale.current.identifier) {
-        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: ethNetwork, locale: locale))
+    ///   - extensions: Chain extensions to enable, e.g. `SolanaConfiguration` from `MagicExt-Solana`
+    public convenience init(apiKey: String, ethNetwork: EthNetwork, extensions: [ExtensionConfiguration] = [], locale: String = Locale.current.identifier) {
+        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: ethNetwork, extensions: extensions, locale: locale), extensions: extensions)
     }
 
-    public convenience init(apiKey: String, customNode: CustomNodeConfiguration, locale: String = Locale.current.identifier) {
-        self.init(urlBuilder: URLBuilder(apiKey: apiKey, customNode: customNode, locale: locale))
+    public convenience init(apiKey: String, customNode: CustomNodeConfiguration, extensions: [ExtensionConfiguration] = [], locale: String = Locale.current.identifier) {
+        self.init(urlBuilder: URLBuilder(apiKey: apiKey, customNode: customNode, extensions: extensions, locale: locale), extensions: extensions)
     }
 
-    public convenience init(apiKey: String, locale: String = Locale.current.identifier) {
-        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: EthNetwork.mainnet, locale: locale))
+    public convenience init(apiKey: String, extensions: [ExtensionConfiguration] = [], locale: String = Locale.current.identifier) {
+        self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: EthNetwork.mainnet, extensions: extensions, locale: locale), extensions: extensions)
     }
 
     /// Core constructor
-    private init(urlBuilder: URLBuilder) {
+    private init(urlBuilder: URLBuilder, extensions: [ExtensionConfiguration]) {
+         self.extensionConfigurations = extensions
          self.rpcProvider = RpcProvider(urlBuilder: urlBuilder)
         
          self.user = UserModule(rpcProvider: self.rpcProvider)

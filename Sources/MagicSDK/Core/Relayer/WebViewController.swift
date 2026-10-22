@@ -202,7 +202,18 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
     /// post Message to HTML via evaluateJavaScript
     ///
     internal func postMessage(message: String) throws -> Void {
+        let execString = try WebViewController.dispatchScript(for: message)
+        webView.evaluateJavaScript(execString) { _, err in
+            if let err = err { print("Magic internal error evaluateJavaScript: \(err)") }
+        }
+    }
 
+    /// The script that delivers `message` to the relayer page.
+    ///
+    /// The message is joined by concatenation, not `String(format:)`. A message
+    /// holding a `%`, such as a URL with `%2F` in a text to sign, would otherwise
+    /// be read as a format specifier and change before it is signed.
+    internal static func dispatchScript(for message: String) throws -> String {
         let data: [String: String] = ["data": message]
 
         guard let json = try? JSONEncoder().encode(data),
@@ -210,12 +221,8 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
             throw AuthRelayerError.messageEncodeFailed(message: message)
         }
 
-        let execString = String(format: "window.dispatchEvent(new MessageEvent('message', \(jsonString)));")
-        webView.evaluateJavaScript(execString) { _, err in
-            if let err = err { print("Magic internal error evaluateJavaScript: \(err)") }
-        }
+        return "window.dispatchEvent(new MessageEvent('message', " + jsonString + "));"
     }
-
 
 
 
