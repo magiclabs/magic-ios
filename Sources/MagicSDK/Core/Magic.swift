@@ -22,8 +22,9 @@ public class Magic: NSObject {
     // MARK: - Property
    public var rpcProvider: RpcProvider
 
-    /// Extensions this instance was created with
-    let extensionConfigurations: [ExtensionConfiguration]
+    /// Extensions this instance was created with. Extension packages such as
+    /// `MagicExt-Solana` read this to tell whether they were enabled.
+    public let extensionConfigurations: [ExtensionConfiguration]
 
     /// Shared instance of `Magic`
     public static var shared: Magic!
@@ -36,7 +37,7 @@ public class Magic: NSObject {
     ///   - apiKey: Your client ID. From https://dashboard.Magic.com
     ///   - ethNetwork: Etherum Network setting (ie. mainnet or goerli)
     ///   - customNode: A custom RPC node 
-    ///   - extensions: Chain extensions to enable, e.g. `SolanaConfiguration` or `BitcoinConfiguration`
+    ///   - extensions: Chain extensions to enable, e.g. `SolanaConfiguration` from `MagicExt-Solana`
     public convenience init(apiKey: String, ethNetwork: EthNetwork, extensions: [ExtensionConfiguration] = [], locale: String = Locale.current.identifier) {
         self.init(urlBuilder: URLBuilder(apiKey: apiKey, network: ethNetwork, extensions: extensions, locale: locale), extensions: extensions)
     }

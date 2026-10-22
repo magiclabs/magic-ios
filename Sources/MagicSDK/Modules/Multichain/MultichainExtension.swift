@@ -12,14 +12,14 @@ internal enum MultichainMethod: String {
     case magic_reveal_key
 }
 
-/// Base class for non-EVM chain extensions.
-/// Mirrors `MultichainExtension` in `@magic-sdk/provider`.
-public class MultichainExtension: BaseModule {
+/// Base class for non-EVM chain extensions, such as `SolanaExtension` in the
+/// `MagicExt-Solana` package. Mirrors `MultichainExtension` in `@magic-sdk/provider`.
+open class MultichainExtension: BaseModule {
 
     /// The chain type sent to the relayer, e.g. `SOLANA` or `BITCOIN`.
     public let chain: String
 
-    init(rpcProvider: RpcProvider, chain: String) {
+    public init(rpcProvider: RpcProvider, chain: String) {
         self.chain = chain
         super.init(rpcProvider: rpcProvider)
     }
