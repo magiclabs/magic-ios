@@ -19,13 +19,14 @@ public struct URLBuilder {
     static let host = "https://box.magic.link"
     public let apiKey: String
 
-    init(apiKey: String, customNode: CustomNodeConfiguration? = nil, network: EthNetwork? = nil, locale: String) {
+    init(apiKey: String, customNode: CustomNodeConfiguration? = nil, network: EthNetwork? = nil, extensions: [ExtensionConfiguration] = [], locale: String) {
 
         let data = try! JSONEncoder().encode(
             UrlParamsEncodable(
                 apiKey: apiKey,
                 ethNetwork: network,
                 customNode: customNode,
+                extensions: ExtensionConfigurations(configurations: extensions),
                 locale: locale
             )
         )
@@ -52,18 +53,20 @@ public struct URLBuilder {
         let locale: String
         let customNode: CustomNodeConfiguration?
         let ethNetwork: EthNetwork?
+        let extensions: ExtensionConfigurations
         
-        init(apiKey: String, ethNetwork: EthNetwork?, customNode: CustomNodeConfiguration?, locale: String) {
+        init(apiKey: String, ethNetwork: EthNetwork?, customNode: CustomNodeConfiguration?, extensions: ExtensionConfigurations, locale: String) {
             self.apiKey = apiKey
             self.locale = locale
             self.customNode = customNode
             self.ethNetwork = ethNetwork
+            self.extensions = extensions
         }
 
         enum CodingKeys: String, CodingKey {
             case apiKey = "API_KEY"
             case ethNetwork = "ETH_NETWORK"
-            case bundleId, host, sdk, locale
+            case bundleId, host, sdk, locale, ext
         }
 
         func encode(to encoder: Encoder) throws {
@@ -82,6 +85,9 @@ public struct URLBuilder {
             }
             if let network = ethNetwork {
                 try container.encode(network.rawValue, forKey: .ethNetwork)
+            }
+            if !extensions.isEmpty {
+                try container.encode(extensions, forKey: .ext)
             }
         }
     }
